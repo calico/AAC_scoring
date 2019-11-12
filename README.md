@@ -6,7 +6,7 @@ This repository automates the abdominal aortic calcification scoring of the DEXA
 
 ## Inference
 
-Given a folder full of DEXA images from the UKBB dataset (after some postprocessing steps - clarify with Anurag before publishing), the code can be run to generate scores only using model_1 (U-net for segmentation + aortic region extraction + regression for scoring) or to generate ensemble scores from model_1 and model_2.
+Given a folder full of DEXA images from the UKBB dataset (after the images have been converted to png format from the DICOM format), the code can be run to generate scores only using model_1 (U-net for segmentation + aortic region extraction + regression for scoring) or to generate ensemble scores from model_1 and model_2.
 
 ### Mode 1
 In this mode, only model_1 scores are computed for the images in the folder. A sample inference call is as follows:
