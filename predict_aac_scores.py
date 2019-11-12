@@ -2,7 +2,7 @@
 Inference script to generate calcification scores on a folder full of DEXA CT images
 
 Author: Jagadish Venkataraman
-Date: 4/16/2019
+Date: 6/18/2019
 '''
 import os.path as osp
 import absl.app as app
@@ -16,6 +16,7 @@ from predict_scores import compute_aac_scores
 import tensorflow as tf
 
 FLAGS = flags.FLAGS
+
 flags.DEFINE_string('img_dir',
                     '/scratch/jagadish/calcification/data/segmentation/unet/inference/png_October2019_subset/',
                     'directory containing images for prediction')
@@ -62,17 +63,19 @@ flags.DEFINE_string('model_file_regression',
                     '/scratch/jagadish/calcification/models/regression/v2/20190703-150303/checkpoints/weights.350-40.54.hdf5',
                     'model file for regression')
 
+tf.enable_eager_execution()
 
-def main(argv):
 
-    tf.enable_eager_execution()
+def get_scores(argv=None):
 
     # predict the aortic region
-    predict_aortic_region()
+    # predict_aortic_region()
 
     # compute the AAC scores
-    compute_aac_scores()
+    scores = compute_aac_scores()
+
+    return scores
 
 
 if __name__ == '__main__':
-    app.run(main)
+    app.run(get_scores)
