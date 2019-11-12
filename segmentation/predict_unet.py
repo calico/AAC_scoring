@@ -165,30 +165,26 @@ def predict_aortic_region():
                         ax[3].imshow(g.aortic_region_mask, cmap='Greys_r')
 
                         fig.tight_layout()
-                        fig.savefig(osp.join(output_dir, osp.basename(name).replace('.png.tfrecord', '_curves.png')))
+                        fig.savefig(osp.join(output_dir, osp.basename(name).replace('.png.tfrecord', '_segmentations.png')))
 
-                        plt.figure()
-                        plt.imshow(g.aortic_region, cmap='Greys_r')
-                        plt.axis('off')
-                        plt.savefig(osp.join(output_dir, osp.basename(name).replace('.png.tfrecord', '_aortic_region.png')))
-                    else:
-                        image = g.aortic_region
-                        # reshape and save
-                        S = image.shape
-                        if len(image.shape) == 2:
-                            image = image[...,np.newaxis]
-                        image = image[max(0, S[0]-FLAGS.aortic_img_height):min(S[0], FLAGS.aortic_img_height), max(0, S[1]-FLAGS.aortic_img_width):min(S[1], FLAGS.aortic_img_width), :]
-                        S = image.shape
-                        delta_w = FLAGS.aortic_img_width - S[1]
-                        delta_h = FLAGS.aortic_img_height - S[0]
-                        top, bottom = delta_h//2, delta_h-(delta_h//2)
-                        left, right = delta_w//2, delta_w-(delta_w//2)
-                        color=image[S[0]-1,0,0]
-                        image = cv2.copyMakeBorder(image, top, bottom, left, right, cv2.BORDER_CONSTANT,value=color)
-                        if len(image.shape) == 2:
-                            image = image[...,np.newaxis]
-                        image = (image*65535).astype(np.uint16)
-                        imageio.imsave(osp.join(output_dir, osp.basename(name).replace('.png.tfrecord', '.png')), image)
+                    # save the aortic region to file
+                    image = g.aortic_region
+                    # reshape and save
+                    S = image.shape
+                    if len(image.shape) == 2:
+                        image = image[...,np.newaxis]
+                    image = image[max(0, S[0]-FLAGS.aortic_img_height):min(S[0], FLAGS.aortic_img_height), max(0, S[1]-FLAGS.aortic_img_width):min(S[1], FLAGS.aortic_img_width), :]
+                    S = image.shape
+                    delta_w = FLAGS.aortic_img_width - S[1]
+                    delta_h = FLAGS.aortic_img_height - S[0]
+                    top, bottom = delta_h//2, delta_h-(delta_h//2)
+                    left, right = delta_w//2, delta_w-(delta_w//2)
+                    color=image[S[0]-1,0,0]
+                    image = cv2.copyMakeBorder(image, top, bottom, left, right, cv2.BORDER_CONSTANT,value=color)
+                    if len(image.shape) == 2:
+                        image = image[...,np.newaxis]
+                    image = (image*65535).astype(np.uint16)
+                    imageio.imsave(osp.join(output_dir, osp.basename(name).replace('.png.tfrecord', '.png')), image)
                 else:
                     # shutil.copyfile(osp.join(FLAGS.img_dir, osp.basename(name)[:-9]), osp.join(FLAGS.img_dir, 'predictions_broken', osp.basename(name)[:-9]))
                     print('Skipping image {n} with {c} vertebrae'.format(n=name,c=g.num_vertebrae))
