@@ -28,3 +28,14 @@ img_name | predicted_score
 If ```--visualize=True```, then a segmentations image similar to the one shown below is saved for every image that is segmented and whose aortic region is extracted. In the image below, the subplots show - vertebrae segmentations + curve joining their centroids, pelvis segmentation + centroid, spinal curve + aortic region parallel to the curve, binary mask for the aortic region - from left to right in that order.
 
 ![ScreenShot](images/visualization_example.png)
+
+
+### Mode 2
+In this mode, the ensemble scores for model_1 and model_2 are computed for the images in the folder. A sample inference call is as follows:
+
+```
+python get_ensemble_scores.py --img_dir=<absolute path to folder containing DEXA images>
+```
+
+In this mode, model_1 is called as described in Mode 1 and then model_2 is called to generate another csv file with calcification scores for each image. The 2 scores are averaged and a csv file with the ensemble scores called 'predicted_aac_scores_ensemble.csv' is output in the main folder containing the DEXA images.
+
