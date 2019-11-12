@@ -39,3 +39,30 @@ python get_ensemble_scores.py --img_dir=<absolute path to folder containing DEXA
 
 In this mode, model_1 is called as described in Mode 1 and then model_2 is called to generate another csv file with calcification scores for each image. The 2 scores are averaged and a csv file with the ensemble scores called 'predicted_aac_scores_ensemble.csv' is output in the main folder containing the DEXA images.
 
+
+## Training
+The training routines for Model_1 are described below.
+
+### Segmentation
+The segmentation is based on a 3-class U-Net architecture - pelvis, vertebrae and background. In order to train the segmentation model, the training images are stored as pngs and the masks are stored as tif stacks where each channel represents the binary mask for one output class. A sample mask stack is shown below. The masks correspond to the background class, the vertebrae class and the pelvis class from left to right respectively.
+
+![ScreenShot](images/annotation_masks.png)
+
+The training routine is called as shown below from within the segmentation folder:
+
+```
+python train_unet.py --img_dir=<absolute path to folder of DEXA png images> --masks_dir=<absolute path to folder of tif stacks of masks for png images> --logs_dir=<absolute path to where the model files and checkpoints should be stored>
+```
+
+Refer to the list of FLAGS in train_unet.py to change other hyperparameters or the network architecture.
+
+### Regression
+The regression model is trained on the aortic regions that are extracted from the DEXA images after segmentation. The ground truth calcification scores need to be stored as csv file containing the name of the original DEXA image and the annotator's scores as the 2 columns. The training routine is called as shown below from the regression folder:
+
+```
+python train_regression.py --data_root=<absolute path to folder of extracted aortic regions from DEXA png images> --gt_csv_file=<name of GT csv file in data_root> --logs_dir=<absolute path to where the model files and checkpoints should be stored>
+```
+
+Refer to the list of FLAGS in train_regression.py to change other hyperparameters or the network architecture.
+
+
