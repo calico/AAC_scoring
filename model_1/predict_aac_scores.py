@@ -18,7 +18,7 @@ import tensorflow as tf
 FLAGS = flags.FLAGS
 
 flags.DEFINE_string('img_dir',
-                    '/scratch/jagadish/calcification/data/segmentation/unet/inference/png_October2019_subset/',
+                    '/scratch/jagadish/calcification/data/segmentation/unet/data_v8/images/',
                     'directory containing images for prediction')
 flags.DEFINE_string('model_file_segmentation',
                      '/scratch/jagadish/calcification/models/segmentation/unet/20190612-092624/model.ckpt-59',
@@ -45,7 +45,7 @@ flags.DEFINE_boolean('visualize',
                      False,
                      'When False, only Aortic region images are created. When true, visualization of segmentations are created')
 flags.DEFINE_boolean('create_tfrecords',
-                     True,
+                     False,
                      'Create TFrecords when true')
 flags.DEFINE_integer('batch_size',
                      512,
@@ -63,17 +63,17 @@ flags.DEFINE_string('model_file_regression',
                     '/scratch/jagadish/calcification/models/regression/v2/20190703-150303/checkpoints/weights.350-40.54.hdf5',
                     'model file for regression')
 
-tf.enable_eager_execution()
+#tf.enable_eager_execution()
 
 
 def get_scores(argv=None):
 
     # predict the aortic region
-    # predict_aortic_region()
+    predict_aortic_region()
 
     # compute the AAC scores
-    scores = compute_aac_scores()
-
+    # scores = compute_aac_scores()
+    scores=None
     return scores
 
 

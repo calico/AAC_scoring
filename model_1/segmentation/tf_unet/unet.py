@@ -117,7 +117,6 @@ def create_conv_net(x, keep_prob, channels, n_class, layers=3, features_root=16,
             convs.append((conv1, conv2))
 
             size *= 2
-            #size -= 4
 
     # Output Map
     with tf.name_scope("output_map"):
@@ -274,7 +273,7 @@ class Unet(object):
 
         return np.argmax(prediction, 3), accuracy
 
-    
+
     def predict_batch(self, model_path, x_test_list, y_test_list=None):
         """
         Uses the model to create a prediction for the given data
@@ -291,10 +290,10 @@ class Unet(object):
 
             # Restore model weights from previously saved model
             self.restore(sess, model_path)
-            
+
             prediction_list = []
             accuracy_list = []
-            
+
             if y_test_list is None:
                 # loop over the list
                 for x_test in x_test_list:
@@ -312,7 +311,7 @@ class Unet(object):
 
         return prediction_list, accuracy_list
 
-    
+
     def save(self, sess, model_path, step):
         """
         Saves the current session to a checkpoint
@@ -323,7 +322,7 @@ class Unet(object):
 
         saver = tf.train.Saver()
         saver.save(sess, model_path, global_step=step)
-        
+
 
     def restore(self, sess, model_path):
         """
@@ -377,13 +376,13 @@ class Trainer(object):
         elif self.optimizer == "adam":
             learning_rate = self.opt_kwargs.pop("learning_rate", 0.001)
             decay_rate = self.opt_kwargs.pop("decay_rate", 0.98)
-            
+
 #             self.learning_rate_node = tf.train.exponential_decay(learning_rate=learning_rate,
 #                                                                  global_step=global_step,
 #                                                                  decay_steps=training_iters,
 #                                                                  decay_rate=decay_rate,
 #                                                                  staircase=True)
-            
+
             self.learning_rate_node = tf.Variable(learning_rate, name="learning_rate")
 
             optimizer = tf.train.AdamOptimizer(learning_rate=self.learning_rate_node,
@@ -453,10 +452,10 @@ class Trainer(object):
 
         # iterator
         iterator = data_provider.make_one_shot_iterator()
-        x, y = iterator.get_next()    
+        x, y = iterator.get_next()
 
         with tf.Session(config=tf.ConfigProto(log_device_placement=False)) as sess:
-            
+
             if write_graph:
                 tf.train.write_graph(sess.graph_def, output_path, "graph.pb", False)
 
@@ -471,12 +470,12 @@ class Trainer(object):
 
             if test_x.shape[1] < test_x.shape[2]:
                 test_x = np.einsum('ijkl->iklj', test_x)
-            if test_y.shape[1] < test_y.shape[2]:                    
+            if test_y.shape[1] < test_y.shape[2]:
                 test_y = np.einsum('ijkl->iklj', test_y)
 
             pred_shape = self.store_prediction(sess, test_x, test_y, "_init")
             print(pred_shape)
-                
+
             summary_writer = tf.summary.FileWriter(output_path, graph=sess.graph)
             logging.info("Start optimization")
 
@@ -485,14 +484,14 @@ class Trainer(object):
                 for epoch in range(epochs):
                     total_loss = 0
                     for step in range((epoch * training_iters), ((epoch + 1) * training_iters)):
-                        
+
                         batch_x, batch_y = sess.run([x, y])
-                        
+
                         if batch_x.shape[1] < batch_x.shape[2]:
                             batch_x = np.einsum('ijkl->iklj', batch_x)
-                        if batch_y.shape[1] < batch_y.shape[2]:                            
+                        if batch_y.shape[1] < batch_y.shape[2]:
                             batch_y = np.einsum('ijkl->iklj', batch_y)
-                        
+
                         # Run optimization op (backprop)
                         _, loss, lr, gradients, summary = sess.run(
                             (self.optimizer, self.net.cost, self.learning_rate_node, self.net.gradients_node, self.summary_op),
@@ -500,13 +499,13 @@ class Trainer(object):
                                     self.net.y: batch_y,
                                     self.net.keep_prob: dropout})
 #                                    self.net.y: util.crop_to_shape(batch_y, pred_shape),
- 
+
                         if self.net.summaries and self.norm_grads:
                             avg_gradients = _update_avg_gradients(avg_gradients, gradients, step)
                             norm_gradients = [np.linalg.norm(gradient) for gradient in avg_gradients]
                             self.norm_gradients_node.assign(norm_gradients).eval()
 
-                        if step % display_step == 0:                                          
+                        if step % display_step == 0:
                             self.output_minibatch_stats(sess, summary_writer, step, batch_x, batch_y)
 #                                                        util.crop_to_shape(batch_y, pred_shape))
 
@@ -546,36 +545,36 @@ class Trainer(object):
 
         # iterator
         iterator = data_provider.make_one_shot_iterator()
-        x, y = iterator.get_next()    
+        x, y = iterator.get_next()
 
         with tf.Session(config=tf.ConfigProto(log_device_placement=False)) as sess:
-            
+
             self.net.restore(sess, model_dir + "/model.ckpt")
 
             test_x, test_y = sess.run([x, y])
 
             if test_x.shape[1] < test_x.shape[2]:
                 test_x = np.einsum('ijkl->iklj', test_x)
-            if test_y.shape[1] < test_y.shape[2]:                    
+            if test_y.shape[1] < test_y.shape[2]:
                 test_y = np.einsum('ijkl->iklj', test_y)
 
             pred_shape = self.store_prediction(sess, test_x, test_y, "_init")
-            
+
             summary_writer = tf.summary.FileWriter(model_dir, graph=sess.graph)
             logging.info("Testing started")
-            
+
             with tf.device('/gpu:0'):
                 for step in range(num_steps):
                     batch_x, batch_y = sess.run([x, y])
-                        
+
                     if batch_x.shape[1] < batch_x.shape[2]:
                         batch_x = np.einsum('ijkl->iklj', batch_x)
-                    if batch_y.shape[1] < batch_y.shape[2]:                            
+                    if batch_y.shape[1] < batch_y.shape[2]:
                         batch_y = np.einsum('ijkl->iklj', batch_y)
-                    
+
                     self.output_minibatch_stats(sess, summary_writer, step, batch_x, batch_y)
 #                    util.crop_to_shape(batch_y, pred_shape))
-                
+
             logging.info("Testing Complete")
 
 
@@ -584,10 +583,10 @@ class Trainer(object):
                                                              self.net.y: batch_y,
                                                              self.net.keep_prob: 1.})
         pred_shape = prediction.shape
-        
+
         loss = sess.run(self.net.cost, feed_dict={self.net.x: batch_x,
                                                   self.net.y: batch_y,
-                                                  self.net.keep_prob: 1.})        
+                                                  self.net.keep_prob: 1.})
 #                                                   self.net.y: util.crop_to_shape(batch_y, pred_shape),
         logging.info("Verification error= {:.1f}%, loss= {:.4f}".format(error_rate(prediction,
                                                                                    batch_y),
