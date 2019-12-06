@@ -1,0 +1,4 @@
+double
+adjacent
+skipone
+skipmulti

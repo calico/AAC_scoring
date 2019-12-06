@@ -1,0 +1,3 @@
+medium
+high
+low
