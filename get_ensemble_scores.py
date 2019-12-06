@@ -10,7 +10,7 @@ import absl.flags as flags
 import absl.app as app
 import glob
 import os
-import predict_aac_scores as model_1
+import model_1.predict_aac_scores as model_1
 
 FLAGS = flags.FLAGS
 
