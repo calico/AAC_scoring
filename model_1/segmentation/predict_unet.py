@@ -166,6 +166,8 @@ def predict_aortic_region():
 
                         fig.tight_layout()
                         fig.savefig(osp.join(output_dir, osp.basename(name).replace('.png.tfrecord', '_segmentations.png')))
+                        imageio.imsave(osp.join(output_dir, osp.basename(name).replace('.png.tfrecord', '_vertebrae.png')), vertebrae_mask.astype(np.uint8))
+                        imageio.imsave(osp.join(output_dir, osp.basename(name).replace('.png.tfrecord', '_pelvis.png')), pelvis_mask.astype(np.uint8))
 
                     # save the aortic region to file
                     image = g.aortic_region
@@ -185,8 +187,6 @@ def predict_aortic_region():
                         image = image[...,np.newaxis]
                     image = (image*65535).astype(np.uint16)
                     imageio.imsave(osp.join(output_dir, osp.basename(name).replace('.png.tfrecord', '.png')), image)
-                    imageio.imsave(osp.join(output_dir, osp.basename(name).replace('.png.tfrecord', '_vertebrae.png')), vertebrae_mask.astype(np.uint8))
-                    imageio.imsave(osp.join(output_dir, osp.basename(name).replace('.png.tfrecord', '_pelvis.png')), pelvis_mask.astype(np.uint8))
                 else:
                     # shutil.copyfile(osp.join(FLAGS.img_dir, osp.basename(name)[:-9]), osp.join(FLAGS.img_dir, 'predictions_broken', osp.basename(name)[:-9]))
                     print('Skipping image {n} with {c} vertebrae'.format(n=name,c=g.num_vertebrae))

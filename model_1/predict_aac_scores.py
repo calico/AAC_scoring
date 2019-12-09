@@ -65,7 +65,7 @@ flags.DEFINE_string('model_file_regression',
 def get_scores(argv=None):
 
     # predict the aortic region
-    # predict_aortic_region()
+    predict_aortic_region()
 
     # compute the AAC scores
     scores = compute_aac_scores()
