@@ -2,7 +2,7 @@
 
 This repository automates the abdominal aortic calcification scoring of the DEXA images in the UKBB dataset. The scoring is based on the scheme shown below (from [this](https://bmcnephrol.biomedcentral.com/articles/10.1186/s12882-017-0480-2) reference paper).
 
-![ScreenShot](images/Abdominal_aortic_calcification_quantification.png)
+![ScreenShot](model_1/images/Abdominal_aortic_calcification_quantification.png)
 
 ## Inference
 
