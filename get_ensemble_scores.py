@@ -31,17 +31,8 @@ def main(argv):
     scores_dict = dict.fromkeys([os.path.basename(_) for _ in img_names], 'NA')
     # loop through the image names, check for scores and update the dict
     for img in scores_dict:
-        score = -1
-        if img in scores_1:
-            score = scores_1[img]
-        if img in scores_2:
-            if score == -1:
-                score = scores_2[img]
-            else:
-                score = (score + scores_2[img])/2
-
-        if score != -1:
-            scores_dict[img] = score
+        if img in scores_1 and img in scores_2:
+            scores_dict[img] = (scores_1[img] + scores_2[img])/2.
 
     # write to csv file
     img_names = list(scores_dict.keys())

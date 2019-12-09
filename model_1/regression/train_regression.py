@@ -10,8 +10,8 @@ import absl.app as app
 import absl.flags as flags
 import datetime
 import time
-from dataloader import DataLoader
-from modelbuilder import ModelBuilder
+from model_1.regression.dataloader import DataLoader
+from model_1.regression.modelbuilder import ModelBuilder
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string('data_root',

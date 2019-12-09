@@ -5,9 +5,7 @@ Author: Jagadish Venkataraman
 Date: 4/16/2019
 '''
 import numpy as np
-import sys
-sys.path.insert(0, '../utils/')
-import tifffile
+import model_1.utils.tifffile as tifffile
 import pandas as pd
 import tensorflow as tf
 import os.path as osp
@@ -126,7 +124,7 @@ class DataLoader(object):
             image = pre_iv3(image)
         else:
             raise ValueError("Unknown backbone network specified")
-        
+
         return image, label
 
 

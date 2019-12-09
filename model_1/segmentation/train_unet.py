@@ -15,9 +15,9 @@ import glob
 import tensorflow as tf
 import absl.app as app
 import absl.flags as flags
-from tf_unet import unet
-from create_image_database import CreateImageDatabase
-from data_loader import DataLoader
+from model_1.segmentation.tf_unet import unet
+from model_1.segmentation.create_image_database import CreateImageDatabase
+from model_1.segmentation.data_loader import DataLoader
 
 
 FLAGS = flags.FLAGS

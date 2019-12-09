@@ -7,8 +7,8 @@ Date: 4/16/2019
 import numpy as np
 import os.path as osp
 import pandas as pd
-from dataloader import DataLoader
-from modelbuilder import ModelBuilder
+from model_1.regression.dataloader import DataLoader
+from model_1.regression.modelbuilder import ModelBuilder
 import absl.flags as flags
 
 FLAGS = flags.FLAGS

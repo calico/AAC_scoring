@@ -7,12 +7,8 @@ Date: 6/18/2019
 import os.path as osp
 import absl.app as app
 import absl.flags as flags
-import sys
-sys.path.insert(0, 'segmentation')
-sys.path.insert(0, 'regression')
-sys.path.insert(0, 'utils')
-from predict_unet import predict_aortic_region
-from predict_scores import compute_aac_scores
+from model_1.segmentation.predict_unet import predict_aortic_region
+from model_1.regression.predict_scores import compute_aac_scores
 import tensorflow as tf
 
 FLAGS = flags.FLAGS
@@ -69,11 +65,11 @@ flags.DEFINE_string('model_file_regression',
 def get_scores(argv=None):
 
     # predict the aortic region
-    predict_aortic_region()
+    # predict_aortic_region()
 
     # compute the AAC scores
-    # scores = compute_aac_scores()
-    scores=None
+    scores = compute_aac_scores()
+    #scores=None
     return scores
 
 

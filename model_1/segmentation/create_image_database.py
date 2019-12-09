@@ -1,16 +1,14 @@
 from __future__ import division
-import sys
-sys.path.insert(0, '../utils/')
 import os
 import os.path as osp
 import imageio
-import tifffile
+import model_1.utils.tifffile as tifffile
 import numpy as np
 import random
 import glob
 import tensorflow as tf
 from skimage.transform import resize
-from convert_img_mask_to_tfrecord import ConvertImgMaskToTFrecord
+from model_1.utils.convert_img_mask_to_tfrecord import ConvertImgMaskToTFrecord
 
 class CreateImageDatabase(object):
     def __init__(self, img_dir: str,

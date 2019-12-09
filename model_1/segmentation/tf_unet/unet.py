@@ -8,8 +8,8 @@ import logging
 
 import tensorflow as tf
 
-from tf_unet import util
-from tf_unet.layers import (weight_variable, weight_variable_devonc, bias_variable,
+from model_1.segmentation.tf_unet import util
+from model_1.segmentation.tf_unet.layers import (weight_variable, weight_variable_devonc, bias_variable,
                             conv2d, deconv2d, max_pool, crop_and_concat, pixel_wise_softmax,
                             cross_entropy)
 import matplotlib.pyplot as plt

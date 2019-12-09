@@ -12,11 +12,11 @@ import imageio
 import numpy as np
 import glob
 import tensorflow as tf
-from tf_unet import unet
+from model_1.segmentation.tf_unet import unet
 import absl.flags as flags
-from create_image_database import CreateImageDatabase
-from extract_aortic_region_v2 import ExtractAorticRegion
-from data_loader import DataLoader
+from model_1.segmentation.create_image_database import CreateImageDatabase
+from model_1.segmentation.extract_aortic_region_v2 import ExtractAorticRegion
+from model_1.segmentation.data_loader import DataLoader
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 plt.switch_backend('agg')
