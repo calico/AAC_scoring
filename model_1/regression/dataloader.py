@@ -4,13 +4,10 @@ Dataloader for regression model
 Author: Jagadish Venkataraman
 Date: 4/16/2019
 '''
-import numpy as np
-import model_1.utils.tifffile as tifffile
+import os.path as osp
+import glob
 import pandas as pd
 import tensorflow as tf
-import os.path as osp
-import cv2
-import glob
 from tensorflow.keras.applications.resnet50 import preprocess_input as pre_res
 from tensorflow.keras.applications.inception_v3 import preprocess_input as pre_iv3
 

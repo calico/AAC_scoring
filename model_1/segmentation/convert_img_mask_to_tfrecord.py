@@ -6,15 +6,15 @@ Date: 4/16/2019
 '''
 
 from __future__ import division
+from typing import Union, List
 import numpy as np
-import glob
-from typing import Union, Any, List, Optional, cast
 import tensorflow as tf
 
-class ConvertImgMaskToTFrecord(object):
+class ConvertImgMaskToTFrecord():
     def __call__(self, img: np.ndarray, mask: np.ndarray, out_file: str) -> None:
         '''
-        img and mask are both assumed to in the shape (Z, H, W) with Z=1 even if there are no z-slices
+        img and mask are both assumed to in the shape (Z, H, W) with Z=1 even
+        if there are no z-slices
         '''
         self.img = self.standardize(img)
         self.mask = self.standardize(mask)
@@ -59,10 +59,13 @@ class ConvertImgMaskToTFrecord(object):
         Method to serialize the image and mask tensors into bytes lists and write them into
         a TFrecord
         '''
-        feature = {'train/signal': self._bytes_feature([tf.compat.as_bytes(self.img.tostring())]), # _bytes_feature(signal),
-                   'train/target': self._bytes_feature([tf.compat.as_bytes(self.mask.tostring())]), # _bytes_feature(target),
-                   'train/shape':  self._int64_feature(self.img.shape),
-                   'train/tarshape': self._int64_feature(self.mask.shape)}
+        feature = {
+            'train/signal': self._bytes_feature(
+                [tf.compat.as_bytes(self.img.tostring())]),
+            'train/target': self._bytes_feature(
+                [tf.compat.as_bytes(self.mask.tostring())]),
+            'train/shape':  self._int64_feature(self.img.shape),
+            'train/tarshape': self._int64_feature(self.mask.shape)}
 
         # Create an example protocol buffer
         example = tf.train.Example(features=tf.train.Features(feature=feature))
@@ -90,12 +93,13 @@ class ConvertImgMaskToTFrecord(object):
 
         _, tfrecord_serialized = reader.read(tfrecord_file_queue)
 
-        # label and image are stored as bytes but could be stored as                                             # int64 or float64 values in a serialized tf.Example protobuf.
+        # label and image are stored as bytes but could be stored as
+        # int64 or float64 values in a serialized tf.Example protobuf.
         tfrecord_features = tf.parse_single_example(tfrecord_serialized,
-                            features = {"train/signal": tf.FixedLenFeature([], tf.string), # float32 numpy array
-                    "train/target": tf.FixedLenFeature([], tf.string), # float32 numpy array
-                    "train/shape": tf.VarLenFeature(tf.int64),
-                    "train/tarshape": tf.VarLenFeature(tf.int64)}, name='features')
+                            features = {"train/signal": tf.FixedLenFeature([], tf.string),
+                            "train/target": tf.FixedLenFeature([], tf.string),
+                            "train/shape": tf.VarLenFeature(tf.int64),
+                            "train/tarshape": tf.VarLenFeature(tf.int64)}, name='features')
 
         # image was saved as uint8, so we have to decode as uint8.
         signal = self._decode_float_array(tfrecord_features['train/signal'])
@@ -110,6 +114,9 @@ class ConvertImgMaskToTFrecord(object):
 
 
     def read_tfrecord(self, tfrecord_file: str) -> List[Union[np.ndarray, np.ndarray, tuple, tuple]]:
+        '''
+        Method to read tfrecord and return the signal and target stacks
+        '''
         print("Reading: " + tfrecord_file)
         signal, target, sig_shape, tar_shape = self.read_from_tfrecord([tfrecord_file])
 

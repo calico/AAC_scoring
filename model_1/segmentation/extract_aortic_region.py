@@ -4,8 +4,8 @@ Extract Aortic region from X-ray image given Pelvis and Vertebrae segmentations
 Author: Jagadish Venkataraman
 Date: 4/30/2019
 '''
+from typing import Union, List
 import numpy as np
-from typing import Union, Any, List, Optional, cast
 from scipy import ndimage
 
 class ExtractAorticRegion(object):

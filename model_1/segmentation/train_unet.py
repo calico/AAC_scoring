@@ -8,16 +8,14 @@ Date: 4/16/2019
 from __future__ import division
 import os
 import os.path as osp
-import numpy as np
 import datetime
 import time
-import glob
-import tensorflow as tf
+import numpy as np
 import absl.app as app
 import absl.flags as flags
-from model_1.segmentation.tf_unet import unet
-from model_1.segmentation.create_image_database import CreateImageDatabase
-from model_1.segmentation.data_loader import DataLoader
+from .unet import Unet, Trainer
+from .create_image_database import CreateImageDatabase
+from .data_loader import DataLoader
 
 
 FLAGS = flags.FLAGS
@@ -75,7 +73,11 @@ def main(argv):
     del argv #unused
 
     # create image database
-    c = CreateImageDatabase(img_dir=FLAGS.img_dir, out_dir=FLAGS.tfrecords_dir, masks_dir=FLAGS.masks_dir, unit_test=False, desired_size=(FLAGS.ny, FLAGS.nx))
+    c = CreateImageDatabase(img_dir=FLAGS.img_dir,
+                            out_dir=FLAGS.tfrecords_dir,
+                            masks_dir=FLAGS.masks_dir,
+                            unit_test=False,
+                            desired_size=(FLAGS.ny, FLAGS.nx))
     filenames = c.tf_records_list
 
     # train and test split
@@ -103,7 +105,7 @@ def main(argv):
     print('Dataloader built')
 
     # Model
-    net = unet.Unet(channels=FLAGS.num_channels,
+    net = Unet(channels=FLAGS.num_channels,
                     n_class=FLAGS.num_classes,
                     layers=FLAGS.num_layers,
                     features_root=FLAGS.num_features,
@@ -111,7 +113,7 @@ def main(argv):
     print('Model built.')
 
     # trainer
-    trainer = unet.Trainer(net, optimizer=FLAGS.optimizer)
+    trainer = Trainer(net, optimizer=FLAGS.optimizer)
 
     if not osp.exists(FLAGS.logs_dir):
         os.makedirs(FLAGS.logs_dir)

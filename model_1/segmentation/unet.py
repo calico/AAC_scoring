@@ -1,18 +1,30 @@
-from __future__ import print_function, division, absolute_import, unicode_literals
+'''
+tf_unet is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
+tf_unet is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with tf_unet.  If not, see <http://www.gnu.org/licenses/>.
+'''
+
+from __future__ import print_function, division, absolute_import, unicode_literals
 import os
 import shutil
 import numpy as np
 from collections import OrderedDict
 import logging
-
 import tensorflow as tf
-
-from model_1.segmentation.tf_unet import util
-from model_1.segmentation.tf_unet.layers import (weight_variable, weight_variable_devonc, bias_variable,
+import matplotlib.pyplot as plt
+from .util import combine_img_prediction
+from .layers import (weight_variable, weight_variable_devonc, bias_variable,
                             conv2d, deconv2d, max_pool, crop_and_concat, pixel_wise_softmax,
                             cross_entropy)
-import matplotlib.pyplot as plt
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 
@@ -269,7 +281,6 @@ class Unet(object):
                 prediction = sess.run(self.predicter, feed_dict={self.x: x_test, self.y: y_test, self.keep_prob: 1.})
                 pred_shape = prediction.shape
                 prediction, accuracy = sess.run([self.predicter, self.accuracy], feed_dict={self.x: x_test, self.y: y_test, self.keep_prob: 1.})
-#                prediction, accuracy = sess.run([self.predicter, self.accuracy], feed_dict={self.x: x_test, self.y: util.crop_to_shape(y_test, pred_shape), self.keep_prob: 1.})
 
         return np.argmax(prediction, 3), accuracy
 
@@ -413,20 +424,6 @@ class Trainer(object):
         abs_prediction_path = os.path.abspath(self.prediction_path)
         output_path = os.path.abspath(output_path)
 
-#        if not restore:
-#            logging.info("Removing '{:}'".format(abs_prediction_path))
-#            shutil.rmtree(abs_prediction_path, ignore_errors=True)
-#            logging.info("Removing '{:}'".format(output_path))
-#            shutil.rmtree(output_path, ignore_errors=True)
-
-#        if not os.path.exists(abs_prediction_path):
-#            logging.info("Allocating '{:}'".format(abs_prediction_path))
-#            os.makedirs(abs_prediction_path)
-
-#        if not os.path.exists(output_path):
-#            logging.info("Allocating '{:}'".format(output_path))
-#            os.makedirs(output_path)
-
         return init
 
     def train(self, data_provider, output_path, training_iters=10, epochs=100, dropout=0.75, display_step=1,
@@ -498,7 +495,6 @@ class Trainer(object):
                             feed_dict={self.net.x: batch_x,
                                     self.net.y: batch_y,
                                     self.net.keep_prob: dropout})
-#                                    self.net.y: util.crop_to_shape(batch_y, pred_shape),
 
                         if self.net.summaries and self.norm_grads:
                             avg_gradients = _update_avg_gradients(avg_gradients, gradients, step)
@@ -507,7 +503,6 @@ class Trainer(object):
 
                         if step % display_step == 0:
                             self.output_minibatch_stats(sess, summary_writer, step, batch_x, batch_y)
-#                                                        util.crop_to_shape(batch_y, pred_shape))
 
                         total_loss += loss
 
@@ -540,7 +535,6 @@ class Trainer(object):
 
         tf.summary.scalar('loss', self.net.cost)
         tf.summary.scalar('cross_entropy', self.net.cross_entropy)
-        #tf.summary.scalar('accuracy', self.net.accuracy)
         self.summary_op = tf.summary.merge_all()
 
         # iterator
@@ -573,7 +567,6 @@ class Trainer(object):
                         batch_y = np.einsum('ijkl->iklj', batch_y)
 
                     self.output_minibatch_stats(sess, summary_writer, step, batch_x, batch_y)
-#                    util.crop_to_shape(batch_y, pred_shape))
 
             logging.info("Testing Complete")
 
@@ -587,17 +580,11 @@ class Trainer(object):
         loss = sess.run(self.net.cost, feed_dict={self.net.x: batch_x,
                                                   self.net.y: batch_y,
                                                   self.net.keep_prob: 1.})
-#                                                   self.net.y: util.crop_to_shape(batch_y, pred_shape),
         logging.info("Verification error= {:.1f}%, loss= {:.4f}".format(error_rate(prediction,
                                                                                    batch_y),
                                                                         loss))
-#        logging.info("Verification error= {:.1f}%, loss= {:.4f}".format(error_rate(prediction,
-                                                                                   #util.crop_to_shape(batch_y,
-                                                                                                     # prediction.shape)),
-                   #                                                     loss))
 
-        img = util.combine_img_prediction(batch_x, batch_y, prediction)
-        #util.save_image(img, "%s/%s.jpg" % (self.prediction_path, name))
+        img = combine_img_prediction(batch_x, batch_y, prediction)
 
         return pred_shape
 

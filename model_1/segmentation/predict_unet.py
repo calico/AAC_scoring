@@ -6,22 +6,23 @@ Date: 4/30/2019
 '''
 
 from __future__ import division
+import shutil
 import os
 import os.path as osp
+import glob
+import cv2
 import imageio
 import numpy as np
-import glob
 import tensorflow as tf
-from model_1.segmentation.tf_unet import unet
 import absl.flags as flags
-from model_1.segmentation.create_image_database import CreateImageDatabase
-from model_1.segmentation.extract_aortic_region_v2 import ExtractAorticRegion
-from model_1.segmentation.data_loader import DataLoader
+import absl.app as app
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
+from .unet import Unet
+from .create_image_database import CreateImageDatabase
+from .extract_aortic_region_v2 import ExtractAorticRegion
+from .data_loader import DataLoader
 plt.switch_backend('agg')
-import shutil
-import cv2
 
 
 FLAGS = flags.FLAGS
@@ -48,7 +49,7 @@ def predict_aortic_region():
         for f in glob.glob(osp.join(output_dir, '*')):
             os.remove(f)
 
-    net = unet.Unet(channels=FLAGS.num_channels,
+    net = Unet(channels=FLAGS.num_channels,
                     n_class=FLAGS.num_classes,
                     layers=FLAGS.num_layers,
                     features_root=FLAGS.num_features)
@@ -90,7 +91,7 @@ def predict_aortic_region():
             # predict on batch
             prediction_list, accuracy_list = net.predict_batch(FLAGS.model_file_segmentation, img_list)
 
-            for prediction, accuracy, img, mask, name in zip(prediction_list, accuracy_list, img_list, mask_list, names_list):
+            for prediction, _, img, mask, name in zip(prediction_list, accuracy_list, img_list, mask_list, names_list):
                 prediction = prediction[0,...]
                 print('Prediction complete for {name}'.format(name=name))
                 vertebrae_mask = np.zeros(prediction.shape)

@@ -1,10 +1,16 @@
+'''
+Dataloader class for the U-Net
+
+Author: Jagadish Venkataraman
+Date: 4/16/2019
+'''
+
 from __future__ import division
-import os.path as osp
 import numpy as np
 import tensorflow as tf
 
 class DataLoader(object):
-    def __init__(self, filenames, params={}, seed=None, augment=False):
+    def __init__(self, filenames, params=None, seed=None, augment=False):
         self.filenames = filenames
         self.params = params
         self.dataset = None
@@ -104,22 +110,6 @@ class DataLoader(object):
         return image, mask
 
 
-    def _resize_data(self, image, mask):
-        """
-        Resizes images to specified size.
-        """
-        image = tf.expand_dims(image, axis=0)
-        mask = tf.expand_dims(mask, axis=0)
-
-        image = tf.image.resize_images(image, self.image_size)
-        mask = tf.image.resize_nearest_neighbor(mask, self.image_size)
-
-        image = tf.squeeze(image, axis=0)
-        mask = tf.squeeze(mask, axis=0)
-
-        return image, mask
-
-
     def _decode_float_array(self, string_input):
         '''
         Decode TF float array
@@ -130,8 +120,8 @@ class DataLoader(object):
     def _parse_function(self, example_proto):
 
         tfrecord_features = tf.parse_single_example(example_proto,
-                            features = {"train/signal": tf.FixedLenFeature([], tf.string), # float32 numpy array
-                    "train/target": tf.FixedLenFeature([], tf.string), # float32 numpy array
+                            features = {"train/signal": tf.FixedLenFeature([], tf.string),
+                    "train/target": tf.FixedLenFeature([], tf.string),
                     "train/shape": tf.VarLenFeature(tf.int64),
                     "train/tarshape": tf.VarLenFeature(tf.int64)}, name='features')
 
@@ -152,15 +142,14 @@ class DataLoader(object):
         print('Augment: {val}'.format(val=augment))
         # extract params
         batch_size = self.params.get('batch_size', 8)
-        shuffleBuf = self.params.get('shuffleBuf', 4)
-        epochs = self.params.get('epochs', 1)
+        shuffle_buf = self.params.get('shuffleBuf', 4)
         repeat = self.params.get('repeat', True)
         shuffle = self.params.get('shuffle', True)
 
         # dataset API
         self.dataset = tf.data.TFRecordDataset(self.filenames)
         if shuffle:
-            self.dataset = self.dataset.shuffle(shuffleBuf)
+            self.dataset = self.dataset.shuffle(shuffle_buf)
         self.dataset = self.dataset.map(lambda e: self._parse_function(e), num_parallel_calls=32)
 
         if augment:
@@ -171,14 +160,6 @@ class DataLoader(object):
             augmented_set = self.dataset.map(self._flip_up_down,
                             num_parallel_calls=32)
             self.dataset = self.dataset.concatenate(augmented_set)
-
-#             augmented_set = self.dataset.map(self._rotate_90,
-#                             num_parallel_calls=32)
-#             self.dataset = self.dataset.concatenate(augmented_set)
-
-#             augmented_set = self.dataset.map(self._rotate_270,
-#                             num_parallel_calls=32)
-#             self.dataset = self.dataset.concatenate(augmented_set)
 
         if repeat:
             self.dataset = self.dataset.repeat()

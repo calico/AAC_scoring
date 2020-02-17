@@ -4,12 +4,11 @@ and stores the scores dicts independently. Finally, the scores are averaged (whe
 a CSV file is output with the predicted score for each image. If an image does not get a score in
 either model, its score is reported as NA
 '''
-import pandas as pd
-import argparse
-import absl.flags as flags
-import absl.app as app
 import glob
 import os
+import pandas as pd
+import absl.flags as flags
+import absl.app as app
 import model_1.predict_aac_scores as model_1
 
 FLAGS = flags.FLAGS

@@ -4,14 +4,13 @@ Train regression model to score calcification
 Author: Jagadish Venkataraman
 Date: 4/16/2019
 '''
-import tensorflow as tf
-import os.path as osp
-import absl.app as app
-import absl.flags as flags
 import datetime
 import time
-from model_1.regression.dataloader import DataLoader
-from model_1.regression.modelbuilder import ModelBuilder
+import tensorflow as tf
+import absl.app as app
+import absl.flags as flags
+from .dataloader import DataLoader
+from .modelbuilder import ModelBuilder
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string('data_root',

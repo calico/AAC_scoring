@@ -4,9 +4,10 @@ Modelbuilder for regression model
 Author: Jagadish Venkataraman
 Date: 4/16/2019
 '''
-import tensorflow as tf
 import os
 import math
+import tensorflow as tf
+
 
 class ModelBuilder(object):
     def __init__(self, config):

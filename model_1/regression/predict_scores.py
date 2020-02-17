@@ -4,12 +4,12 @@ Run regression model to score calcification
 Author: Jagadish Venkataraman
 Date: 4/16/2019
 '''
-import numpy as np
 import os.path as osp
+import numpy as np
 import pandas as pd
-from model_1.regression.dataloader import DataLoader
-from model_1.regression.modelbuilder import ModelBuilder
 import absl.flags as flags
+from .dataloader import DataLoader
+from .modelbuilder import ModelBuilder
 
 FLAGS = flags.FLAGS
 

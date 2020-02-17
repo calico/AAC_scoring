@@ -1,14 +1,21 @@
+'''
+Create TFrecords of img/mask stacks
+
+Author: Jagadish Venkataraman
+Date: 4/16/2019
+'''
+
 from __future__ import division
 import os
 import os.path as osp
-import imageio
-import model_1.utils.tifffile as tifffile
-import numpy as np
-import random
 import glob
-import tensorflow as tf
+import random
+import imageio
+import numpy as np
 from skimage.transform import resize
-from model_1.utils.convert_img_mask_to_tfrecord import ConvertImgMaskToTFrecord
+import tifffile
+from .convert_img_mask_to_tfrecord import ConvertImgMaskToTFrecord
+
 
 class CreateImageDatabase(object):
     def __init__(self, img_dir: str,

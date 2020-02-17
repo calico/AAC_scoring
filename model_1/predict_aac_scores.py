@@ -1,15 +1,14 @@
 '''
-Inference script to generate calcification scores on a folder full of DEXA CT images
+Inference script to generate calcification scores on a folder full of DEXA
+CT images
 
 Author: Jagadish Venkataraman
 Date: 6/18/2019
 '''
-import os.path as osp
 import absl.app as app
 import absl.flags as flags
-from model_1.segmentation.predict_unet import predict_aortic_region
-from model_1.regression.predict_scores import compute_aac_scores
-import tensorflow as tf
+from segmentation.predict_unet import predict_aortic_region
+from regression.predict_scores import compute_aac_scores
 
 FLAGS = flags.FLAGS
 
@@ -17,8 +16,9 @@ flags.DEFINE_string('img_dir',
                     '/scratch/jagadish/calcification/data/segmentation/unet/data_v8/images/',
                     'directory containing images for prediction')
 flags.DEFINE_string('model_file_segmentation',
-                     '/scratch/jagadish/calcification/models/segmentation/unet/20190612-092624/model.ckpt-59',
-                     'model file for segmentation')
+                    '/scratch/jagadish/calcification/models/segmentation/unet/'
+                    '20190612-092624/model.ckpt-59',
+                    'model file for segmentation')
 flags.DEFINE_integer('num_classes',
                      3,
                      'number of output classes including background')
@@ -39,7 +39,8 @@ flags.DEFINE_integer('num_features',
                      'Number of features in U-net')
 flags.DEFINE_boolean('visualize',
                      False,
-                     'When False, only Aortic region images are created. When true, visualization of segmentations are created')
+                     'When False, only Aortic region images are created. '
+                     'When true, visualization of segmentations are created')
 flags.DEFINE_boolean('create_tfrecords',
                      False,
                      'Create TFrecords when true')
@@ -53,16 +54,18 @@ flags.DEFINE_integer('aortic_img_height',
                      256,
                      'aortic region image height')
 flags.DEFINE_string('backbone_network',
-                     None,
-                     'Backbone network to use')
+                    None,
+                    'Backbone network to use')
 flags.DEFINE_string('model_file_regression',
-                    '/scratch/jagadish/calcification/models/regression/v2/20190703-150303/checkpoints/weights.350-40.54.hdf5',
+                    '/scratch/jagadish/calcification/models/regression/v2/'
+                    '20190703-150303/checkpoints/weights.350-40.54.hdf5',
                     'model file for regression')
 
-#tf.enable_eager_execution()
 
-
-def get_scores(argv=None):
+def get_scores():
+    '''
+    Method to compute calcification scores for the DEXA images
+    '''
 
     # predict the aortic region
     predict_aortic_region()
@@ -73,5 +76,9 @@ def get_scores(argv=None):
     return scores
 
 
+def main(argv):
+    get_scores()
+
+
 if __name__ == '__main__':
-    app.run(get_scores)
+    app.run(main)
