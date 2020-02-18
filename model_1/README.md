@@ -1,12 +1,46 @@
-# AAC_scoring
+# Scoring of the abdominal aortic calcification
 
-This repository automates the abdominal aortic calcification scoring of the DEXA images in the UKBB dataset. The scoring is based on the scheme shown below (from [this](https://bmcnephrol.biomedcentral.com/articles/10.1186/s12882-017-0480-2) reference paper).
+The scoring of the DEXA images is based on the scheme shown below (from [this](https://bmcnephrol.biomedcentral.com/articles/10.1186/s12882-017-0480-2) reference paper).
 
 ![ScreenShot](images/Abdominal_aortic_calcification_quantification.png)
 
-## Inference
-
 Given a folder full of DEXA images from the UKBB dataset (after the images have been converted to png format from the DICOM format), the code can be run to generate scores only using model_1 (U-net for segmentation + aortic region extraction + regression for scoring) or to generate ensemble scores from model_1 and model_2.
+
+Model 1 estimates AAC scores via the following 3 steps:
+
+1. Segmentation of the lower spine region.
+2. Localization of the Aortic region using a spine-curve fitting method.
+3. Regression on the localized region to map the calcification levels to a score in the standard range.
+
+### Segmentaion of the lower spine
+
+In order to localize the region of the DEXA scan corresponding to the Aorta, correct anatomic locations of the Pelvis (P) and 4 vertebrae (L3-L5, S1) are needed. The network to achieve the necessary segmentation is based on a U-Net architecture. The grayscale DEXA image is fed to the input layer while at the final layer a 1x1 convolution is used to map each 16-component feature vector to one of 3 classes - spine, pelvis or background. 
+
+The UKBB dataset has a total of 31,494 DEXA scans of patients available to score. Of those, 200 images were randomly chosen for annotations of P and L3-L5, S1. The png images of the scans were loaded on an open sourced annotation tool, QuPath (reference/link), and the relevant anatomical locations were marked using the polygon tool. The user annotations were converted to binary masks for the 3 classes - Pelvis, vertebrae and background . Of the 200 images, 175 were used for training and cross-validation while the rest were reserved as an unseen test set to quantify the segmentation performance. 
+
+Simple data augmentations in the form of crop and zoom, left-right flips and slight rotations (upto +/- 10 degrees) are used to augment the images in the training dataset. The network was trained with the multi-class cross-entropy loss using an Adam optimizer. The evaluation metric is the mean IoU for each of the 3 classes.
+
+### Localization of the Aortic region
+
+Once the segmentations of P and L3-L5, S1 are completed, the aortic region is localized and extracted via the following steps:
+
+1. Run the segmentations through post-processing steps to:
+  a. Eliminate false positives for P (determined through co-localization with L3-L5, S1).
+  b. Fix broken or missing vertebrae using median height and width estimates for the different vertebrae
+2. Determine the centroids of each of L3, L4, L5, S1 and P. Fit a spline curve to pass through each of these points to determine the spinal curvature
+3. Along the spinal curvature, move to the right by a fixed offset Aoff and extract a retangular region whose width is Awidth and whose height is determined by the vertical distance between the centroids of L3 and P. Crop and/or pad the images to be of size 196x196 pixels.
+
+At the output of this step, the Aortic regions will be localized and extracted from the original CT images. These regions are then passed on to the Regression module to be converted into a calcification score.
+
+### Regression
+
+The final step in translating the DEXA images to a calcification score is to run a regression model that maps the extracted aortic regions to a score. 
+
+Of the 1300 user annotated calcification levels, 1000 images were used for training and cross-validation while the other 300 were held out as an unseen test set. The ground truth data is highly skewed towards the lower calcification scores creating a high degree of data imbalance. In order to introduce some degree of balance, the dataset was augmented in a stratified manner. Augmentation routines include horizontal and vertical flips, random rotations, zoom and crop, random brightness changes, random contrast changes as well as random hue changes. During agile augmentation, images with higher scores were augmented with different combinations of the routines to produce as many as 32 variations of every image while images with lower calcification scores were augmented only once or not at all.
+
+During training, the regression model used a weighted mean squared error metric wherein errors in the higher calcification scores were weighted higher than those in the lower scores, once again with the intention of offsetting the high degree of skew in the ground truth score distributions. The network is trained with an Adam optimizer and the evaluation metric is the correlation between the predicted scores and the median user scores. 
+
+# Running the code
 
 ### Mode 1
 In this mode, only model_1 scores are computed for the images in the folder. A sample inference call is as follows:
