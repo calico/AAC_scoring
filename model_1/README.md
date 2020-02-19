@@ -42,8 +42,8 @@ During training, the regression model used a weighted mean squared error metric 
 
 # Running the code
 
-### Mode 1
-In this mode, only model_1 scores are computed for the images in the folder. A sample inference call is as follows:
+### Computing calcification scores using Model 1
+To compute the calcification scores on a folder of DEXA images only from model 1, the inference call is as follows:
 
 ```
 python predict_aac_scores.py --img_dir=<absolute path to folder containing DEXA images> --model_file_segmentation=<absolute path to segmentation model file> --model_file_regression=<absolute path to regression model file> --visualize=False
@@ -63,15 +63,32 @@ If ```--visualize=True```, then a segmentations image similar to the one shown b
 
 ![ScreenShot](images/visualization_example.png)
 
+The full list of flags is given below
 
-### Mode 2
-In this mode, the ensemble scores for model_1 and model_2 are computed for the images in the folder. A sample inference call is as follows:
+
+Flag | Description
+--- | --- 
+```img_dir``` | ```directory containing images for prediction```
+```model_file_segmentation``` | ```model file for segmentation```
+```num_classes``` | ```number of output classes including background```
+```num_channels``` | ```3 for RGB and 1 for grayscale input images```
+```nx``` | ```width of CT image```
+```ny``` | ```height of CT image```
+```visualize``` | ```When False, only Aortic region images are created. When true, visualization of segmentations are created```
+```create_tfrecords``` | ```Create folder of TFrecords when true```
+```batch_size``` | ```batch size of images to process```
+```model_file_regression``` | ```model file for regression```
+
+
+
+### Computing ensemble calcification scores using both models
+To compute the ensemble score from both models on a folder of DEXA images, the inference call is run from the parent folder as follows - 
 
 ```
-python get_ensemble_scores.py --img_dir=<absolute path to folder containing DEXA images>
+python get_ensemble_scores.py --img_dir=<absolute path to folder containing DEXA images> --model_file_segmentation=<absolute path to segmentation model file> --model_file_regression=<absolute path to regression model file> --visualize=False <followed by other flags needed by model 2>
 ```
 
-In this mode, model_1 is called as described in Mode 1 and then model_2 is called to generate another csv file with calcification scores for each image. The 2 scores are averaged and a csv file with the ensemble scores called 'predicted_aac_scores_ensemble.csv' is output in the main folder containing the DEXA images.
+In this mode, model_1 is called as described previously and then model_2 is called to generate another csv file with calcification scores for each image. The 2 scores are averaged and a csv file with the ensemble scores called 'predicted_aac_scores_ensemble.csv' is output in the main folder containing the DEXA images.
 
 
 ## Training
@@ -88,7 +105,28 @@ The training routine is called as shown below from within the segmentation folde
 python train_unet.py --img_dir=<absolute path to folder of DEXA png images> --masks_dir=<absolute path to folder of tif stacks of masks for png images> --logs_dir=<absolute path to where the model files and checkpoints should be stored>
 ```
 
-Refer to the list of FLAGS in train_unet.py to change other hyperparameters or the network architecture.
+The full set of flags for training the segmentation model are as follows - 
+
+Flag | Description
+--- | --- 
+```img_dir``` | ```directory containing images for training```
+```masks_dir``` | ```directory containing groudn truth masks for training```
+```logs_dir``` | ```directory to write the model and log files to```
+```tfrecords_dir``` | ```directory to write TF Records to for training```
+```nx``` | ```width of CT image```
+```ny``` | ```height of CT image```
+```tfrecords_dir``` | ```directory to write TF Records to for training```
+```batch_size``` | ```batch size of images to process```
+```shuffle_buf``` | ```Shuffle buffer size```
+```num_classes``` | ```number of output classes including background```
+```num_channels``` | ```3 for RGB and 1 for grayscale input images```
+```lr``` | ```learning rate```
+```num_epochs``` | ```number of  training epochs```
+```class_weights``` | ```weights to penalize losses for various classes```
+```optimizer``` | ```optimizer to use```
+```num_layers``` | ```number of U-Net layers```
+```num_features``` | ```number of filters in the root layer of the U-net```
+
 
 ### Regression
 The regression model is trained on the aortic regions that are extracted from the DEXA images after segmentation. The ground truth calcification scores need to be stored as csv file containing the name of the original DEXA image and the annotator's scores as the 2 columns. The training routine is called as shown below from the regression folder:
@@ -97,6 +135,17 @@ The regression model is trained on the aortic regions that are extracted from th
 python train_regression.py --data_root=<absolute path to folder of extracted aortic regions from DEXA png images> --gt_csv_file=<name of GT csv file in data_root> --logs_dir=<absolute path to where the model files and checkpoints should be stored>
 ```
 
-Refer to the list of FLAGS in train_regression.py to change other hyperparameters or the network architecture.
+The full set of flags for training the segmentation model are as follows - 
 
-
+Flag | Description
+--- | --- 
+```data_root``` | ```directory containing aortic region images for training```
+```gt_csv_file``` | ```CSV file containing ground truth calcification scores```
+```logdir``` | ```directory to write the model and log files to```
+```tfrecords_dir``` | ```directory to write TF Records to for training```
+```backbone_network``` | ```Backbone network to use. Can be 'resnet', 'inception', or None. Uses custom CNN as backbone if None.```
+```batch_size``` | ```batch size of images to process```
+```IMG_WIDTH``` | ```Aortic region image width```
+```IMG_HEIGHT``` | ```Aortic region image height```
+```lr``` | ```learning rate```
+```epochs``` | ```number of  training epochs```
