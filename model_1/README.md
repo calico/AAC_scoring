@@ -12,7 +12,7 @@ Model 1 estimates AAC scores via the following 3 steps:
 2. Localization of the Aortic region using a spine-curve fitting method.
 3. Regression on the localized region to map the calcification levels to a score in the standard range.
 
-### Segmentaion of the lower spine
+### Segmentation of the lower spine
 
 In order to localize the region of the DEXA scan corresponding to the Aorta, correct anatomic locations of the Pelvis (P) and 4 vertebrae (L3-L5, S1) are needed. The network to achieve the necessary segmentation is based on a U-Net architecture. The grayscale DEXA image is fed to the input layer while at the final layer a 1x1 convolution is used to map each 16-component feature vector to one of 3 classes - spine, pelvis or background. 
 
