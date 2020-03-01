@@ -188,9 +188,9 @@ def predict_aortic_region():
                         image = image[...,np.newaxis]
                     image = (image*65535).astype(np.uint16)
                     imageio.imsave(osp.join(output_dir, osp.basename(name).replace('.png.tfrecord', '.png')), image)
-                else:
+                #else:
                     # shutil.copyfile(osp.join(FLAGS.img_dir, osp.basename(name)[:-9]), osp.join(FLAGS.img_dir, 'predictions_broken', osp.basename(name)[:-9]))
-                    print('Skipping image {n} with {c} vertebrae'.format(n=name,c=g.num_vertebrae))
+                    # print('Skipping image {n} with {c} vertebrae'.format(n=name,c=g.num_vertebrae))
 
             # batch counter
             counter += 1

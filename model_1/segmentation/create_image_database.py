@@ -80,7 +80,6 @@ class CreateImageDatabase(object):
         for img_file, mask_file in self.img_mask_list:
             tf_record_file = osp.join(self.out_dir, osp.basename(img_file) + '.tfrecord')
             img = self._load_img(img_file)
-            img = self.remove_white_corners(img)
 
             if img is not None:
                 mask = self._load_img(mask_file)
