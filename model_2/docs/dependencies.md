@@ -19,5 +19,5 @@ It uses `keras`.  It also uses the following keras utility:
 `from keras.models import load_model`.
 
 
-
+Specific versions are listed in [requirements.txt](../requirements.txt).
 
