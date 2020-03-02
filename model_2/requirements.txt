@@ -1,5 +1,5 @@
 numpy==1.16.5
 scipy==1.2.1
-cv2==4.1.0
+opencv-python==4.1.0.25
 tensorflow==1.15.0
 keras==2.2.4
