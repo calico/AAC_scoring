@@ -81,7 +81,7 @@ regressModFile = os.path.join(modPath,"final_regress.h5")
 def main():
   ap = argparse.ArgumentParser()
   ap.add_argument("-o","--output_file",
-                  help="directory that models will be written to")
+                  help="file that scores will be written to")
   ap.add_argument("--data_bg",
                   help="input data from application of the background noise model")
   ap.add_argument("--data_high",
