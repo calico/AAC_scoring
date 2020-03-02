@@ -6,6 +6,8 @@ either model, its score is reported as NA
 '''
 import glob
 import os
+import sys
+sys.path.insert(0, 'model_1')
 import pandas as pd
 import absl.flags as flags
 import absl.app as app
