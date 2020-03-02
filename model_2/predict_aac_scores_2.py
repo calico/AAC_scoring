@@ -51,7 +51,18 @@ def runAnalysis(args):
   AC.runAnalysis(argForAC)
   print "##########Applying regression model ################"
   FR.runAnalysis(argForFR)
-  
+
+# for use by the two-model script
+def get_scores(imgDir):
+    argForMAP = {}
+    argForMAP['input_dir'] = imgDir
+    tempDir = os.path.join(imgDir,'Temp')
+    if not(os.path.isdir(tempDir)): os.mkdir(tempDir)
+    argForMAP['output_dir'] = tempDir
+    argForMAP['original_resize'] = False
+    argForMAP['no_resize'] = False
+    runAnalysis(argForMAP)
+    raise ValueError("make dictionary")
   
 if __name__ == "__main__": main()
 
