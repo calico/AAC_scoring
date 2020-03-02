@@ -21,8 +21,7 @@ def main(argv):
     # compute model 1 scores
     scores_1 = model_1.get_scores()
     # compute model 2 scores
-    # scores_2 = model_2.get_scores()
-    scores_2 = {}
+    scores_2 = model_2.get_scores(FLAGS.img_dir)
 
     # get list of all png images in folder
     img_names = glob.glob(os.path.join(FLAGS.img_dir, '*png'))
