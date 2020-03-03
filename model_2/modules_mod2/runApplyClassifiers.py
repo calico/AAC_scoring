@@ -68,7 +68,7 @@ def runAnalysis(args):
           outL = [fId+'.png']
           for c in res.labels():
             outL.append( (c,res.score(c)) )
-          outf.write('\t'.join(map(str,outL))+'\n')
+          outf.write('\t'.join(list(map(str,outL)))+'\n')
     if outf!=sys.stdout: outf.close()
 
 if __name__ == "__main__": main()
