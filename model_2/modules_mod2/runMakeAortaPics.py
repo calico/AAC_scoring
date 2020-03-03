@@ -511,6 +511,7 @@ class CalcBoxer:
     for n in range(1,len(bL)):
       xA,yA = bL[n-1].midpoint()
       xB,yB = bL[n].midpoint()
+      xA,yA,xB,yB = int(xA),int(yA),int(xB),int(yB)
       xPL = [xA-bord,xA+bord,xB-bord,xB+bord]
       yPL = [yA-bord,yA+bord,yB-bord,yB+bord]
       # limited to the edges of the full image
