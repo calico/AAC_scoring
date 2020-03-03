@@ -32,7 +32,7 @@ class TfObjectDetector:
       od_graph_def = tf.GraphDef()
       with tf.gfile.GFile(self._modFile, 'rb') as fid:
         serialized_graph = fid.read()
-        print self._modFile
+        print(self._modFile)
         od_graph_def.ParseFromString(serialized_graph)
         tf.import_graph_def(od_graph_def, name='')
     self._category_index = getCategoryIndex(self._catFile)
@@ -93,7 +93,7 @@ class TfClassApplyer:
       od_graph_def = tf.GraphDef()
       with tf.gfile.GFile(self._modFile, 'rb') as fid:
         serialized_graph = fid.read()
-        print self._modFile
+        print(self._modFile)
         od_graph_def.ParseFromString(serialized_graph)
         tf.import_graph_def(od_graph_def, name='')
     self._sess = tf.Session(graph=self._detection_graph)
