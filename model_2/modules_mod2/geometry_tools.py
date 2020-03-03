@@ -8,6 +8,7 @@ class Box:
     self._x0, self._y0 = x0, y0
     self._x1, self._y1 = x1, y1
     self._score = score
+    self._intIn	= intIn
   # recover coords with min/max values
   def xMin(self):
     return min([self._x0,self._x1])
