@@ -432,6 +432,7 @@ class CalcBoxer:
     """helper for "_evaluateVerts": THIS function actually
     invokes the model.
     """
+    x,y = int(x),int(y)
     bord,circ,colorCirc = 60,5,(0,250,0)
     h,w = self._img.shape[:2]
     # limited to the edges of the full image
