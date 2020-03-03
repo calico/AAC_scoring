@@ -86,7 +86,7 @@ class TfClassApplyer:
     self._modFile = existingModelFile
     self._catFile = categoryFile
     proto_as_ascii_lines = tf.gfile.GFile(categoryFile).readlines()
-    self._labels = map(lambda i: i.rstrip(), proto_as_ascii_lines)
+    self._labels = list(map(lambda i: i.rstrip(), proto_as_ascii_lines))
     # ## Load a (frozen) Tensorflow model into memory.
     self._detection_graph = tf.Graph()
     with self._detection_graph.as_default():
