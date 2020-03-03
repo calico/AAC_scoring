@@ -1,6 +1,6 @@
 import tensorflow as tf  
 import numpy as np
-import geometry_tools as GM
+from . import geometry_tools as GM
 import cv2
 
 def getCategoryIndex(fname):
