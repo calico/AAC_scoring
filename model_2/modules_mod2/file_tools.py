@@ -13,11 +13,11 @@ class ImageIterator:
   def initiateSort(self):
     self._isSrt = True
     cL = os.listdir(self._hostD)
-    cL = map(lambda i: os.path.join(self._hostD,i), cL)
-    cL = filter(lambda i: os.path.isfile(i), cL)
-    cL = filter(lambda i: i.split('.')[-1].lower()!='txt', cL)
-    cL = filter(lambda i: i.split('.')[-1].lower()!='tsv', cL)
-    cL = filter(lambda i: i.split('.')[-1].lower()!='csv', cL)
+    cL = list(map(lambda i: os.path.join(self._hostD,i), cL))
+    cL = list(filter(lambda i: os.path.isfile(i), cL))
+    cL = list(filter(lambda i: i.split('.')[-1].lower()!='txt', cL))
+    cL = list(filter(lambda i: i.split('.')[-1].lower()!='tsv', cL))
+    cL = list(filter(lambda i: i.split('.')[-1].lower()!='csv', cL))
     self._candL = cL
     self._candN = 0
     if self._candN==len(self._candL): self._isSrt = False
