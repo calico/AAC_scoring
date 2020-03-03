@@ -697,7 +697,7 @@ def runAnalysis(inputArgs):
       sys.stdout.flush()
     if n % 200 == 0: sys.stdout.write('\n')
     if imgWriter.makeImage(): nWrit += 1
-  print n,'read,',nWrit,'written.'
-  print imgWriter.resizeSummary()
+  print(str(n)+' read,'+str(nWrit)+' written.')
+  print(imgWriter.resizeSummary())
 
 if __name__ == "__main__": main()
