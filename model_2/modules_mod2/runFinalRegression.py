@@ -55,7 +55,7 @@ def getDataArray(modToF):
     if len(modToDD[m]) != len(idL):
       raise ValueError('different # scores for '+m)
     for i in idL:
-      if not(modToDD[m].has_key(i)):
+      if not(i in modToDD[m]):
         raise ValueError('ID "'+i+'" was missing from '+m)
   # get the data arrays, in proper order (see nb146 p67)
   dataL = []
