@@ -7,8 +7,12 @@ Date: 6/18/2019
 '''
 import absl.app as app
 import absl.flags as flags
+import os
+import tensorflow.python.util.deprecation as deprecation
 from segmentation.predict_unet import predict_aortic_region
 from regression.predict_scores import compute_aac_scores
+deprecation._PRINT_DEPRECATION_WARNINGS = False
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 FLAGS = flags.FLAGS
 

@@ -19,7 +19,7 @@ def compute_aac_scores():
               'IMG_HEIGHT': FLAGS.aortic_img_height,
               'IMG_WIDTH': FLAGS.aortic_img_width,
               'backbone_network': FLAGS.backbone_network,
-              'batch_size': FLAGS.batch_size,
+              'batch_size': 1,
               'model_file': FLAGS.model_file_regression,
               'mode': 'test'}
 
