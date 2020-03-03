@@ -573,6 +573,7 @@ class CalcBoxer:
         if changed:
           changed = False
           x,y = bottom.midpoint()
+          x,y =	int(x),int(y)
           xMn,xMx = max([x-bord,0]),min([x+bord,w])
           yMn,yMx = max([y-top,0]),h
           subImg = np.copy(self._img[yMn:yMx,xMn:xMx,:])
