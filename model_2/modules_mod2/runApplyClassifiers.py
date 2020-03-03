@@ -3,8 +3,8 @@ import os
 import cv2
 import sys
 import argparse
-import ml_tools as ML
-import file_tools as FT
+from . import ml_tools as ML
+from . import file_tools as FT
 
 # THE PATHNAME TO THE MODELS APPLIED BY THIS MODULE
 # is defined here.  Alternative pathways based on
