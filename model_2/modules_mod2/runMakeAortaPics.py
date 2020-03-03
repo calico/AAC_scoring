@@ -56,7 +56,7 @@ class ImgGenerator:
     self._modSet = modSet
     
     self._outDir = outDir
-    self._elnL = map(lambda i:i, vertEnList)
+    self._elnL = list(map(lambda i:i, vertEnList))
     self._imgMang.initiateSort()
 
     # appropriate resizing will be achieved by pre-specifying a
@@ -84,7 +84,7 @@ class ImgGenerator:
     finName = self._imgMang.getImgFile()
     foutNameL = os.path.basename(finName).split('.')
     foutNameL.append(foutNameL[-1])
-    foutNameL[-2] = '_'.join(map(lambda i: i[0],self._elnL))
+    foutNameL[-2] = '_'.join(list(map(lambda i: i[0],self._elnL)))
     foutName = '.'.join(foutNameL)
     foutName = os.path.join(self._outDir,foutName)
     # calculations on the image
@@ -100,8 +100,8 @@ class ImgGenerator:
     # only output if there are two images (all verts identified)
     if len(outImgL)==len(self._elnL):
       didWrite = True
-      wdL = map(lambda i: i.shape[1], outImgL)
-      htL = map(lambda i: i.shape[0], outImgL)
+      wdL = list(map(lambda i: i.shape[1], outImgL))
+      htL = list(map(lambda i: i.shape[0], outImgL))
       outImgF = np.zeros((sum(htL),max(wdL),3),dtype=np.uint8)
       for vN in range(len(self._elnL)):
         htSt,htEnd = sum(htL[:vN]),sum(htL[:vN+1])
@@ -145,7 +145,7 @@ class ImgGenerator:
     return rsz
   def _getOriginalResizer(self):
     f = open(permOldFileFile)
-    lines = map(lambda i: i.rstrip(), f.readlines())
+    lines = list(map(lambda i: i.rstrip(), f.readlines()))
     f.close()
     idToSet = {}
     for i in lines: idToSet[i.split()[0]] = i.split()[1]
@@ -249,8 +249,8 @@ class CalcBoxer:
     if nL4==-1: return {}
     bL = GM.sortBoxesOnAxis(self._vertBL)
     if len(bL) < 2: return {}
-    angPrL = map(lambda n: VertebraBoxPair(bL[n-1],bL[n]).angle(), 
-                 range(1,len(bL)))
+    angPrL = list(map(lambda n: VertebraBoxPair(bL[n-1],bL[n]).angle(), 
+                 range(1,len(bL))))
     angSgL = [ angPrL[0] ]
     for n in range(1,len(angPrL)):
       angSgL.append( GM.angMean(angPrL[n-1],angPrL[n]) )
@@ -303,9 +303,9 @@ class CalcBoxer:
     # define the width of the spinal column across the lumbar vers
     lumbarNs = range(nL4,min([nL4+4,len(bL)]))
     if len(lumbarNs)==0: return {}
-    widL = map(lambda b: b.xMax() - b.xMin(), bL)
-    lumbarWids = map(lambda n: widL[n] * math.cos(GM.minAngDiff(spineRL[n].A(),math.radians(180))), lumbarNs)
-    lumbarWids = filter(lambda i: i > 0, lumbarWids)  
+    widL = list(map(lambda b: b.xMax() - b.xMin(), bL))
+    lumbarWids = list(map(lambda n: widL[n] * math.cos(GM.minAngDiff(spineRL[n].A(),math.radians(180))), lumbarNs))
+    lumbarWids = list(filter(lambda i: i > 0, lumbarWids))
     if len(lumbarWids)==0: return {}
     meanW_1t4 = np.mean(lumbarWids)
     walkOut = meanW_1t4 * 0.5
@@ -344,18 +344,18 @@ class CalcBoxer:
     aortAng = math.radians(180) - angle
     sideNs = range(4)
     if polygon.numSides()!=4: raise ValueError("aortaRectImg REQ a rectangle")
-    apXYL = map(lambda n: polygon.corner(n), sideNs)
-    apXL,apYL = map(lambda i: i[0], apXYL),map(lambda i: i[1], apXYL)
+    apXYL = list(map(lambda n: polygon.corner(n), sideNs))
+    apXL,apYL = list(map(lambda i: i[0], apXYL)),list(map(lambda i: i[1], apXYL))
     # get the center of the aorta rectangle to rotate around
     xC,yC = int(np.mean(apXL)),int(np.mean(apYL))
     # rotate the image and the polygon around the center
     M = cv2.getRotationMatrix2D((xC, yC), math.degrees(aortAng), 1.0)
     rows,cols = self._img.shape[:2]
     rotImg = cv2.warpAffine(self._img, M, (cols,rows))#self._img.shape[:2])
-    vcXL,vcYL = map(lambda x: x-xC, apXL),map(lambda y: y-yC, apYL)
-    rvcXL = map(lambda n: vcXL[n]*math.cos(-aortAng) - vcYL[n]*math.sin(-aortAng), sideNs)
-    rvcYL = map(lambda n: vcYL[n]*math.cos(-aortAng) - vcXL[n]*math.sin(-aortAng), sideNs)
-    rtXL,rtYL = map(lambda x: x+xC, rvcXL),map(lambda y: y+yC, rvcYL)
+    vcXL,vcYL = list(map(lambda x: x-xC, apXL)),list(map(lambda y: y-yC, apYL))
+    rvcXL = list(map(lambda n: vcXL[n]*math.cos(-aortAng) - vcYL[n]*math.sin(-aortAng), sideNs))
+    rvcYL = list(map(lambda n: vcYL[n]*math.cos(-aortAng) - vcXL[n]*math.sin(-aortAng), sideNs))
+    rtXL,rtYL = list(map(lambda x: x+xC, rvcXL)),list(map(lambda y: y+yC, rvcYL))
     rXmin,rXmax,rYmin,rYmax = min(rtXL),max(rtXL),min(rtYL),max(rtYL)
     # return the cropped rotated image
     return rotImg[int(rYmin):int(rYmax), int(rXmin):int(rXmax)]
@@ -387,8 +387,8 @@ class CalcBoxer:
       x,y = b.midpoint()
       xysL.append( (x,y,b.score()) )
     if len(xysL)==0: return -1
-    xysnL = map(lambda n: (xysL[n][0],xysL[n][1],xysL[n][2],n),
-                range(len(xysL)))
+    xysnL = list(map(lambda n: (xysL[n][0],xysL[n][1],xysL[n][2],n),
+                range(len(xysL))))
     # get L4/L5 box as "bBox"
     if not(self._hasBx): self._makeAiBoxes()
     sbL = [(b.score(),b) for b in self._baseBL]
@@ -398,7 +398,7 @@ class CalcBoxer:
       if x > bBox.xMax() or x < bBox.xMin(): return False
       if y > bBox.yMax() or y < bBox.yMin(): return False
       return True
-    xysnLF = filter(ovlBase, xysnL)
+    xysnLF = list(filter(ovlBase, xysnL))
     if len(xysnLF)==0: return -1
     elif len(xysnLF)==1: x4,y4,s4,n4 = xysnLF[0]
     else:
@@ -412,7 +412,7 @@ class CalcBoxer:
 
   def _boxScoreFilter(self,goodL,badL,minScore):
     """Moves boxes from goodL to badL if their scores are below minScore"""
-    moveL = filter(lambda b: b.score() < minScore, goodL)
+    moveL = list(filter(lambda b: b.score() < minScore, goodL))
     for b in moveL: goodL.remove(b)
     badL.extend(moveL)
 
@@ -456,9 +456,9 @@ class CalcBoxer:
       # update "newLength" at the end
       oldLen = newLen
       bL = GM.sortBoxesOnAxis(self._vertBL)
-      vbpL = map(lambda n: VertebraBoxPair(bL[n-1],bL[n]), range(1,len(bL)))
-      segPaL = map(lambda n: (GM.minAngDiff(vbpL[n-1].angle(),vbpL[n].angle()), n),
-                   range(1,len(vbpL)) )
+      vbpL = list(map(lambda n: VertebraBoxPair(bL[n-1],bL[n]), range(1,len(bL))))
+      segPaL = list(map(lambda n: (GM.minAngDiff(vbpL[n-1].angle(),vbpL[n].angle()), n),
+                   range(1,len(vbpL)) ))
       maxAng,maxAngN = max(segPaL)
       if maxAng > self._maxAngV:
         doRemove = True # guarantees def. of "remBlock"
@@ -538,7 +538,7 @@ class CalcBoxer:
           changed = True
       elif label=='skipmulti':
         fillBL = self._modSet['fillMuDet'].getBoxes(subImg)
-        fillBL = filter(lambda b: b.score() >= self._minScP, fillBL)
+        fillBL = list(filter(lambda b: b.score() >= self._minScP, fillBL))
         fillBL = [(b.score(),b) for b in fillBL]
         fillBL.sort()
         fillBL.reverse() # high-score first
@@ -586,7 +586,7 @@ class CalcBoxer:
               newB = self._adjustBox(newB,xMn,yMn)
               if newBS >= self._minScP:
                 # make sure the new box is at the bottom
-                testBL = map(lambda i:i, self._vertBL)
+                testBL = list(map(lambda i:i, self._vertBL))
                 testBL.append(newB)
                 testBL = GM.sortBoxesOnAxis(testBL)
                 if testBL[0]==newB:
@@ -684,7 +684,7 @@ def runAnalysis(inputArgs):
   if args['original_resize']: resizeOpt = 'original'
   if args['no_resize']: resizeOpt = 'none'
   
-  vertL = map(lambda i: i.split('-'), permVerts.split(','))
+  vertL = list(map(lambda i: i.split('-'), permVerts.split(',')))
   vertL = [(i[0],int(i[1])) for i in vertL]
   imgWriter = ImgGenerator(args["input_dir"],modSet,args["output_dir"],vertL,resizeOpt)
   nWrit = 0
