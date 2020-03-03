@@ -23,7 +23,7 @@ def mkCatScrDD(fname,colStart=1):
   """
   csDD = {}
   f = open(fname)
-  tL = map(lambda i: i.rstrip(), f.readlines())
+  tL = list(map(lambda i: i.rstrip(), f.readlines()))
   f.close()
   for n in range(len(tL)):
     c = tL[n].split('\t')
