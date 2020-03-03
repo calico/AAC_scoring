@@ -59,9 +59,9 @@ def runAnalysis(args):
       if infName.split('.')[-1]!='tsv':
         img = cv2.imread(infName)
         if img is None or img.shape[0]==0 or img.shape[1]==0:
-          print infName
-          if img is None: print "\tis an empty image"
-          else: print "\tis an empty image of shape ",img.shape
+          print(infName)
+          if img is None: print("\tis an empty image")
+          else: print("\tis an empty image of shape "+str(img.shape))
         else:
           res = classMod.getClasses(img)
           fId = os.path.basename(infName).split('.')[0]
