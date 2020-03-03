@@ -10,10 +10,9 @@ import argparse
 import os
 import numpy as np, math
 
-import ml_tools as ML
-import geometry_tools as GM
-import file_tools as FT
-
+from . import ml_tools as ML
+from . import geometry_tools as GM
+from . import file_tools as FT
         
 
 # REQUIRES: vertEnList orders vertebrae from top to bottom;
