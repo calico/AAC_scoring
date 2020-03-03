@@ -157,8 +157,8 @@ def sortBoxesOnAxis(bL):
   elif len(bL)==1: return [bL[0]]
   else:
     # sort the boxes by their position on the axis
-    xyL = map(lambda b: b.midpoint(), bL)
-    xL,yL = map(lambda i:i[0],xyL),map(lambda i:i[1],xyL)
+    xyL = list(map(lambda b: b.midpoint(), bL))
+    xL,yL = list(map(lambda i:i[0],xyL)),list(map(lambda i:i[1],xyL))
     # get the center point
     xMid,yMid = np.mean(xL),np.mean(yL)
     m = getOdrBeta(xL,yL)
@@ -167,7 +167,7 @@ def sortBoxesOnAxis(bL):
       bX,bY = b.midpoint()
       bsL.append( (getPosOnAxis(m,xMid,yMid,bX,bY)[1],b) )
     bsL.sort()
-    bL = map(lambda i: i[1], bsL)
+    bL = list(map(lambda i: i[1], bsL))
     bL.reverse()
     return bL
 
@@ -181,8 +181,8 @@ class Polygon:
   assumes legit geometry.
   """
   def __init__(self,xL,yL):
-    self._xL = map(lambda i: i, xL)
-    self._yL = map(lambda i: i, yL)
+    self._xL = list(map(lambda i: i, xL))
+    self._yL = list(map(lambda i: i, yL))
   def numSides(self): return len(self._xL)
   # sides are zero-indexed
   def sideLen(self,n):
