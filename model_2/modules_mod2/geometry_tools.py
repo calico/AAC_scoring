@@ -4,7 +4,7 @@ import math
 
 
 class Box:
-  def __init__(self,x0,y0,x1,y1,score):
+  def __init__(self,x0,y0,x1,y1,score,intIn=False):
     self._x0, self._y0 = x0, y0
     self._x1, self._y1 = x1, y1
     self._score = score
@@ -22,7 +22,8 @@ class Box:
   def midpoint(self):
     xMid = (self._x0 + self._x1) / 2
     yMid = (self._y0 + self._y1) / 2
-    return xMid,yMid
+    if self._intIn: return int(xMid),(yMid)
+    else: return xMid,yMid
 
 
 
