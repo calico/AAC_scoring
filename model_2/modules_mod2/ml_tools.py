@@ -58,7 +58,7 @@ class TfObjectDetector:
     for n in range(int(numB)):
        yA,yB = int(bL[n][0]*h),int(bL[n][2]*h)
        xA,xB = int(bL[n][1]*w),int(bL[n][3]*w)
-       boxL.append(GM.Box(xA,yA,xB,yB,scL[n]))
+       boxL.append(GM.Box(xA,yA,xB,yB,scL[n],True))
     return boxL
 
 
