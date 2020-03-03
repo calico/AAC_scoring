@@ -1,12 +1,27 @@
-import tensorflow as tf
-from utils import label_map_util  
+import tensorflow as tf  
 import numpy as np
 import geometry_tools as GM
 import cv2
 
+def getCategoryIndex(fname):
+  """a more-limited but streamlined implementation of the functions                                                                                                            
+     needed from the "label_map_util" component of the tensorflow                                                                                                              
+     research/object_detection/utils used for training these models.                                                                                                           
+     See https://github.com/tensorflow/models/blob/master/research/object_detection/utils/label_map_util.py                                                                    
+  """
+  f = open(fname)
+  tL = f.readlines()
+  f.close()
+  if tL[0].find('{')==-1: raise ValueError("missing open bracket")
+  if tL[3].find('}')==-1: raise ValueError("missing close bracket")
+  if tL[1].find('id:')==-1: raise ValueError("missing id label")
+  if tL[2].find('name:')==-1: raise ValueError("missing name label")
+  idN = int(tL[1].split(':')[1].strip())
+  name = tL[2].split(':')[1].strip()
+  catIndex = {idN: {'id':idN, 'name':name}}
+  return catIndex
+
 # separate out the box-drawing
-# this class uses code from:
-# https://pythonprogramming.net/video-tensorflow-object-detection-api-tutorial/
 class TfObjectDetector:
   def __init__(self,existingModelFile,categoryFile,maxNumClasses):
     self._modFile = existingModelFile
@@ -20,11 +35,7 @@ class TfObjectDetector:
         print self._modFile
         od_graph_def.ParseFromString(serialized_graph)
         tf.import_graph_def(od_graph_def, name='')
-    label_map = label_map_util.load_labelmap(self._catFile)
-    categories = label_map_util.convert_label_map_to_categories(label_map,
-                                                                max_num_classes=maxNumClasses,
-                                                                use_display_name=True)
-    self._category_index = label_map_util.create_category_index(categories)
+    self._category_index = getCategoryIndex(self._catFile)
     self._sess = tf.Session(graph=self._detection_graph)
   def getBoxes(self,image):
     # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
