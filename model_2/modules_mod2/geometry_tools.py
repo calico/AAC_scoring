@@ -163,11 +163,12 @@ def sortBoxesOnAxis(bL):
     xMid,yMid = np.mean(xL),np.mean(yL)
     m = getOdrBeta(xL,yL)
     bsL = []
-    for b in bL:
+    for	bn in range(len(bL)):
+      b = bL[bn]
       bX,bY = b.midpoint()
-      bsL.append( (getPosOnAxis(m,xMid,yMid,bX,bY)[1],b) )
+      bsL.append( (getPosOnAxis(m,xMid,yMid,bX,bY)[1],bn) )
     bsL.sort()
-    bL = list(map(lambda i: i[1], bsL))
+    bL = list(map(lambda i: bL[i[1]], bsL))
     bL.reverse()
     return bL
 
