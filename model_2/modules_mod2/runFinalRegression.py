@@ -113,7 +113,7 @@ def runAnalysis(args):
     fo.write(idL[n]+'\t'+str(outputData[n])+'\n')
     pass # write the file-then-score output format
   fo.close()
-  print "wrote file"
+  print("wrote file")
 
 
 if __name__ == "__main__": main()
