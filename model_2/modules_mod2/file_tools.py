@@ -14,6 +14,8 @@ class ImageIterator:
     self._isSrt = True
     cL = os.listdir(self._hostD)
     cL = map(lambda i: os.path.join(self._hostD,i), cL)
+    cL = filter(lambda i: os.path.isfile(i), cL)
+    cL = filter(lambda i: i.split('.')[-1].lower()!='txt', cL)
     self._candL = cL
     self._candN = 0
     if self._candN==len(self._candL): self._isSrt = False
