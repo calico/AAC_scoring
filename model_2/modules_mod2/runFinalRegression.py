@@ -103,10 +103,10 @@ def runAnalysis(args):
   for a in argToMod.keys():
     modToF[argToMod[a]] = args[a]
   inputData,idL = getDataArray(modToF)
-  print "got data"
+  print("got data")
   
   outputData = model.predict(inputData).flatten()
-  print "applied model"
+  print("applied model")
   
   fo = open(args["output_file"],'w')
   for n in range(len(idL)):
