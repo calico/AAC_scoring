@@ -45,11 +45,11 @@ def runAnalysis(args):
   argForFR['data_bg'] = os.path.join(args['storage_dir'],'results.back.tsv')
   argForFR['output_file'] = args['output_file']
 
-  print "########## Extracting aortic images ################"
+  print("########## Extracting aortic images ################")
   MAP.runAnalysis(argForMAP)
-  print "########## Applying classification models ##########"
+  print("########## Applying classification models ##########")
   AC.runAnalysis(argForAC)
-  print "##########Applying regression model ################"
+  print("##########Applying regression model ################")
   FR.runAnalysis(argForFR)
 
 # for use by the two-model script
