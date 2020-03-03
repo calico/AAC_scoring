@@ -50,7 +50,7 @@ def getDataArray(modToF):
   for m in ['background','high_aac','low_aac']:
     modToDD[m] = mkCatScrDD(modToF[m])
   # validate that the same IDs are there for each model
-  idL = modToDD['background'].keys()
+  idL = list(modToDD['background'].keys())
   for m in ['high_aac','low_aac']:
     if len(modToDD[m]) != len(idL):
       raise ValueError('different # scores for '+m)
