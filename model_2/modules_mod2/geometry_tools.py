@@ -22,7 +22,7 @@ class Box:
   def midpoint(self):
     xMid = (self._x0 + self._x1) / 2
     yMid = (self._y0 + self._y1) / 2
-    return xMid,yMid
+    return int(xMid),int(yMid)
 
 
 
