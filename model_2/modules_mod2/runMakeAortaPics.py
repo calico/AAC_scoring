@@ -50,7 +50,7 @@ class ImgGenerator:
     reqModL = ['vertDet', 'baseDet', 'vertOk', 'gapClass', 'fill1Det',
                'fillMuDet', 'baseOk', 'fillBotDet']
     for rm in reqModL:
-      if not(modSet.has_key(rm)):
+      if not(rm in modSet):
         raise ValueError("ImgGenerator needs this ML model for CalcBoxer: "+rm)
     self._imgMang = FT.ImageIterator(imgDir)
     self._modSet = modSet
@@ -94,7 +94,7 @@ class ImgGenerator:
     rectD = calcBox.aortaRectangles(self._elnL)
     outImgL = []
     for el,other in self._elnL:
-      if rectD.has_key(el):
+      if el in rectD:
         aortaImg = calcBox.rectangleImg(angD[el],rectD[el])
         outImgL.append(aortaImg)
     # only output if there are two images (all verts identified)
@@ -153,7 +153,7 @@ class ImgGenerator:
     rszDefault = self._getDefaultResizer()
     def resizeFunc(img,fname):
       fID = os.path.basename(fname).split('.')[0]
-      if not(idToSet.has_key(fID)): return rszDefault(img,fname)
+      if not(fID in idToSet): return rszDefault(img,fname)
       elif idToSet[fID]=='A': return rszNull(img,fname)
       else:
         self._n55Rsz += 1
@@ -201,7 +201,7 @@ class CalcBoxer:
     reqModL = ['vertDet', 'baseDet', 'vertOk', 'gapClass', 'fill1Det',
                'fillMuDet', 'baseOk', 'fillBotDet']
     for rm in reqModL:
-      if not(modSet.has_key(rm)):
+      if not(rm in modSet):
         raise ValueError("CalcBoxer needs this ML model: "+rm)
     self._modSet = modSet
     self._minScV = minScoreV
@@ -664,8 +664,8 @@ def runAnalysis(inputArgs):
   # so that I can modify the resize option values
   args = {}
   args.update(inputArgs)
-  if not(args.has_key('original_resize')): args['original_resize'] = False
-  if not(args.has_key('no_resize')): args['no_resize'] = False
+  if not('original_resize' in args): args['original_resize'] = False
+  if not('no_resize' in args): args['no_resize'] = False
   if args['original_resize'] and args['no_resize']:
     raise ValueError('original_resize and no_resize options cannot BOTH be selected')
   
