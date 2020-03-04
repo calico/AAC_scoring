@@ -23,7 +23,7 @@ def main(argv):
         raise ValueError('Image folder missing. Use --img_dir= argument to set this folder name.')
 
     # compute model 1 scores
-    #scores_1 = model_1.get_scores()
+    scores_1 = model_1.get_scores()
     # compute model 2 scores
     scores_2 = model_2.get_scores(FLAGS.img_dir)
 
