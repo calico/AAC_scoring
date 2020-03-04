@@ -12,6 +12,8 @@ import pandas as pd
 import absl.flags as flags
 import absl.app as app
 import model_1.predict_aac_scores as model_1
+import model_2.predict_aac_scores_2 as model_2
+
 
 FLAGS = flags.FLAGS
 
@@ -21,7 +23,7 @@ def main(argv):
         raise ValueError('Image folder missing. Use --img_dir= argument to set this folder name.')
 
     # compute model 1 scores
-    scores_1 = model_1.get_scores()
+    #scores_1 = model_1.get_scores()
     # compute model 2 scores
     scores_2 = model_2.get_scores(FLAGS.img_dir)
 
