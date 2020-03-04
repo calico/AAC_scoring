@@ -70,8 +70,8 @@ def predict_aortic_region():
     iterator = ds.dataset.make_one_shot_iterator()
     img_batch_tf, mask_batch_tf = iterator.get_next()
 
-    sess = tf.Session()
-    init = tf.global_variables_initializer()
+    sess = tf.compat.v1.Session()
+    init = tf.compat.v1.global_variables_initializer()
     sess.run(init)
 
     counter = 0

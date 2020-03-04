@@ -17,12 +17,12 @@ from __future__ import print_function, division, absolute_import, unicode_litera
 import tensorflow as tf
 
 def weight_variable(shape, stddev=0.1, name="weight"):
-    initial = tf.truncated_normal(shape, stddev=stddev)
+    initial = tf.random.truncated_normal(shape, stddev=stddev)
     return tf.Variable(initial, name=name)
 
 
 def weight_variable_devonc(shape, stddev=0.1, name="weight_devonc"):
-    return tf.Variable(tf.truncated_normal(shape, stddev=stddev), name=name)
+    return tf.Variable(tf.random.truncated_normal(shape, stddev=stddev), name=name)
 
 
 def bias_variable(shape, name="bias"):
@@ -45,7 +45,7 @@ def deconv2d(x, W,stride):
 
 
 def max_pool(x,n):
-    return tf.nn.max_pool(x, ksize=[1, n, n, 1], strides=[1, n, n, 1], padding='SAME')
+    return tf.nn.max_pool2d(x, ksize=[1, n, n, 1], strides=[1, n, n, 1], padding='SAME')
 
 
 def crop_and_concat(x1,x2):
@@ -68,4 +68,4 @@ def pixel_wise_softmax(output_map):
 
 
 def cross_entropy(y_,output_map):
-    return -tf.reduce_mean(y_*tf.log(tf.clip_by_value(output_map,1e-10,1.0)), name="cross_entropy")
+    return -tf.reduce_mean(y_*tf.math.log(tf.clip_by_value(output_map,1e-10,1.0)), name="cross_entropy")

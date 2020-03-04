@@ -119,17 +119,17 @@ class DataLoader(object):
 
     def _parse_function(self, example_proto):
 
-        tfrecord_features = tf.parse_single_example(example_proto,
-                            features = {"train/signal": tf.FixedLenFeature([], tf.string),
-                    "train/target": tf.FixedLenFeature([], tf.string),
-                    "train/shape": tf.VarLenFeature(tf.int64),
-                    "train/tarshape": tf.VarLenFeature(tf.int64)}, name='features')
+        tfrecord_features = tf.io.parse_single_example(example_proto,
+                            features = {"train/signal": tf.io.FixedLenFeature([], tf.string),
+                    "train/target": tf.io.FixedLenFeature([], tf.string),
+                    "train/shape": tf.io.VarLenFeature(tf.int64),
+                    "train/tarshape": tf.io.VarLenFeature(tf.int64)}, name='features')
 
         # image was saved as uint8, so we have to decode as uint8.
         signal = self._decode_float_array(tfrecord_features['train/signal'])
         target = self._decode_float_array(tfrecord_features['train/target'])
-        sig_shape = tf.sparse_tensor_to_dense(tfrecord_features['train/shape'])
-        tar_shape = tf.sparse_tensor_to_dense(tfrecord_features['train/tarshape'])
+        sig_shape = tf.sparse.to_dense(tfrecord_features['train/shape'])
+        tar_shape = tf.sparse.to_dense(tfrecord_features['train/tarshape'])
 
         # the image tensor is flattened out, so we have to reconstruct the shape
         signal = tf.reshape(signal, sig_shape)
