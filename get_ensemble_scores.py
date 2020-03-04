@@ -8,6 +8,7 @@ import glob
 import os
 import sys
 sys.path.insert(0, 'model_1')
+sys.path.insert(1, 'model_2')
 import pandas as pd
 import absl.flags as flags
 import absl.app as app
