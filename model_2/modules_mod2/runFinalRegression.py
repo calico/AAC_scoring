@@ -74,8 +74,8 @@ def getDataArray(modToF):
 # whether this script is being called directly from
 # its directory or used as a module by predict_aac_scores_2.py
 # from the directory above.
-if os.path.basename(os.getcwd())=='modules_mod2': modPath = '../models_mod2'
-else: modPath = 'models_mod2'
+currPath = os.path.dirname(os.path.realpath(__file__))
+modPath = os.path.join(currPath, '../models_mod2')
 regressModFile = os.path.join(modPath,"final_regress.h5")
 
 def main():

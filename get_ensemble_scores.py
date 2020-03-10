@@ -13,7 +13,7 @@ import pandas as pd
 import absl.flags as flags
 import absl.app as app
 import model_1.predict_aac_scores as model_1
-#import model_2.predict_aac_scores_2 as model_2
+import model_2.predict_aac_scores_2 as model_2
 
 
 FLAGS = flags.FLAGS

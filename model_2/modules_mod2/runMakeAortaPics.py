@@ -631,12 +631,9 @@ class VertebraBoxPair:
 # MODELS THAT I WANT TO USE PERMANENTLY;
 # the path will be different if this is run from
 # this script versus predict_aac_scores_2.py
-if os.path.basename(os.getcwd())=='modules_mod2':
-  modPath = '../models_mod2'
-  permOldFileFile = 'original_files.txt'
-else:
-  modPath = 'models_mod2'
-  permOldFileFile = 'modules_mod2/original_files.txt'
+currPath = os.path.dirname(os.path.realpath(__file__))
+modPath = os.path.join(currPath, '../models_mod2')
+permOldFileFile = os.path.join(currPath, 'original_files.txt')
 pMods = {}
 for modName in ["vert","l4l5","okV","gap","fill1","fillM","okB","fillB"]:
   fullModName,fullLabelName = modName+'_mod', modName+'_label'

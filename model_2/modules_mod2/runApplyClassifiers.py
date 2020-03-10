@@ -11,8 +11,11 @@ from . import file_tools as FT
 # whether this script is being called directly from
 # its directory or used as a module by predict_aac_scores_2.py
 # from the directory above.
-if os.path.basename(os.getcwd())=='modules_mod2': modPath = '../models_mod2'
-else: modPath = 'models_mod2'
+currPath = os.path.dirname(os.path.realpath(__file__))
+modPath = os.path.join(currPath, '../models_mod2')
+
+#if os.path.basename(os.getcwd())=='modules_mod2': modPath = '../models_mod2'
+#else: modPath = 'models_mod2'
 
 # This module applies three tensorflow models.  For each, there is a
 # model weights file (.pb) and a model output labels file (.labels.txt).
