@@ -61,6 +61,8 @@ img_name | predicted_score
 
 If ```--visualize=True```, then a segmentations image similar to the one shown below is saved for every image that is segmented and whose aortic region is extracted. In the image below, the subplots show - vertebrae segmentations + curve joining their centroids, pelvis segmentation + centroid, spinal curve + aortic region parallel to the curve, binary mask for the aortic region - from left to right in that order.
 
+The PNG images are converted to tfrecords for speeding up the input processing pipeline. The creation of tfrecords is turned ON by default. If you have already created them and wish to not create them again, you can turn the flag OFF by setting ```create_tfrecords=False``` at the command line.
+
 ![ScreenShot](images/visualization_example.png)
 
 The full list of flags is given below

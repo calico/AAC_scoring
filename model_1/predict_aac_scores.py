@@ -47,7 +47,7 @@ flags.DEFINE_boolean('visualize',
                      'When False, only Aortic region images are created. '
                      'When true, visualization of segmentations are created')
 flags.DEFINE_boolean('create_tfrecords',
-                     False,
+                     True,
                      'Create TFrecords when true')
 flags.DEFINE_integer('batch_size',
                      512,
