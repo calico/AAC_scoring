@@ -62,9 +62,10 @@ def get_scores(imgDir):
     args['output_dir'] = tempDir
     args['original_resize'] = False
     args['no_resize'] = False
+    resFile = os.path.join(tempDir,'results.tsv')
+    args['output_file'] = resFile
     runAnalysis(args)
     # now I need to create a dictionary to meet the wrapper spec.
-    resFile = os.path.join(tempDir,'results.tsv')
     idToSc = {}
     f = open(resFile)
     line = f.readline()
