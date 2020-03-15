@@ -13,6 +13,7 @@ import random
 import imageio
 import numpy as np
 from skimage.transform import resize
+from errno import ENOENT
 import tifffile
 from .convert_img_mask_to_tfrecord import ConvertImgMaskToTFrecord
 
@@ -52,6 +53,9 @@ class CreateImageDatabase(object):
         '''
         mask_files = glob.glob(osp.join(self.masks_dir, "*.png"))
         img_files = glob.glob(osp.join(self.img_dir, "*.png"))
+
+        if not img_files:
+            raise IOError(ENOENT, 'No DEXA images found, exiting')
 
         # ignoring image extensions, get the base names of the images
         img_base_names = [os.path.basename(name).split('.')[0] for name in img_files]

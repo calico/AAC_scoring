@@ -18,6 +18,7 @@ import absl.flags as flags
 import absl.app as app
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
+from errno import ENOENT
 from .unet import Unet
 from .create_image_database import CreateImageDatabase
 from .extract_aortic_region_v2 import ExtractAorticRegion
@@ -39,6 +40,8 @@ def predict_aortic_region():
         print('TFrecords created')
     else:
         filenames = glob.glob(osp.join(tfrecords_dir, '*tfrecord'))
+        if not filenames:
+            raise IOError(ENOENT, 'No tfrecords found. Enable creation flag and run again')
 
 
     if not os.path.isdir(output_dir):
