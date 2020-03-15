@@ -43,7 +43,7 @@ def runAnalysis(args):
   argForFR['data_low'] = os.path.join(args['storage_dir'],'results.aacLo.tsv')
   argForFR['data_high'] = os.path.join(args['storage_dir'],'results.aacHi.tsv')
   argForFR['data_bg'] = os.path.join(args['storage_dir'],'results.back.tsv')
-  argForFR['output_file'] = args['output_file']
+  argForFR['output_file'] = os.path.join(args['input_dir'],'predicted_aac_scores_model2.tsv')
 
   print("########## Extracting aortic images ################")
   MAP.runAnalysis(argForMAP)
@@ -62,16 +62,15 @@ def get_scores(imgDir):
     args['output_dir'] = tempDir
     args['original_resize'] = False
     args['no_resize'] = False
-    resFile = os.path.join(tempDir,'results.tsv')
-    args['output_file'] = resFile
     runAnalysis(args)
     # now I need to create a dictionary to meet the wrapper spec.
+    resFile = os.path.join(args['input_dir'],'predicted_aac_scores_model2.tsv')
     idToSc = {}
     f = open(resFile)
     line = f.readline()
     while line:
       c = line.rstrip().split('\t')
-      idToSc[c[0]] = float(c[1])
+      idToSc[c[0] + '.png'] = float(c[1])
       line = f.readline()
     f.close()
     return idToSc
