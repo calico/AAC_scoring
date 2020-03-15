@@ -13,3 +13,6 @@ python get_ensemble_scores.py --img_dir=<absolute path to folder containing DEXA
 ```
 
 The ensemble scores are output in a csv file called 'predicted_aac_scores_ensemble.csv' in the folder containing the DEXA images.
+
+**Note**
+You will need access to the DEXA images from the UK BioBank dataset to be able to run the models presented in this repository. All modeling choices are tailored to these images.
