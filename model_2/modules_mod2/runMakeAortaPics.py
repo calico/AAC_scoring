@@ -541,10 +541,11 @@ class CalcBoxer:
       elif label=='skipmulti':
         fillBL = self._modSet['fillMuDet'].getBoxes(subImg)
         fillBL = list(filter(lambda b: b.score() >= self._minScP, fillBL))
-        fillBL = [(b.score(),b) for b in fillBL]
+        # n's are included in case two boxes have tied scores (there's no box comparator)
+        fillBL = [(fillBL[n].score(),n,fillBL[n]) for n in range(len(fillBL))]
         fillBL.sort()
         fillBL.reverse() # high-score first
-        for fs,fb in fillBL[:2]:
+        for fs,n,fb in fillBL[:2]:
           addBoxL.append(self._adjustBox(fb,xMn,yMn))
           changed = True
     for b in removeL:
