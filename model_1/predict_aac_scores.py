@@ -18,11 +18,10 @@ logging.getLogger('tensorflow').disabled = True
 FLAGS = flags.FLAGS
 
 flags.DEFINE_string('img_dir',
-                    '/scratch/jagadish/calcification/data/segmentation/unet/data_v8/images/',
+                    None,
                     'directory containing images for prediction')
 flags.DEFINE_string('model_file_segmentation',
-                    '/scratch/jagadish/calcification/models/segmentation/unet/'
-                    '20190612-092624/model.ckpt-59',
+                    'model_files/final_model_unet',
                     'model file for segmentation')
 flags.DEFINE_integer('num_classes',
                      3,
@@ -62,8 +61,7 @@ flags.DEFINE_string('backbone_network',
                     None,
                     'Backbone network to use')
 flags.DEFINE_string('model_file_regression',
-                    '/scratch/jagadish/calcification/models/regression/v2/'
-                    '20190703-150303/checkpoints/weights.350-40.54.hdf5',
+                    'model_files/final_model_regression.hdf5',
                     'model file for regression')
 
 
