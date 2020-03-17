@@ -14,13 +14,13 @@ from .modelbuilder import ModelBuilder
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string('data_root',
-                    '/scratch/jagadish/calcification/data/segmentation/unet/inference/png_October2019_subset/aortic_regions/',
-                    'directory containing images for training')
+                    None,
+                    'directory containing extract aortic region images for training')
 flags.DEFINE_string('gt_csv_file',
                      'median_score_gt.csv',
                      'CSV file containing median calcification scores')
 flags.DEFINE_string('logdir',
-                     '/scratch/jagadish/calcification/models/regression/v2/' + datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d-%H%M%S'),
+                     'logs/' + datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d-%H%M%S'),
                      'log directory')
 flags.DEFINE_string('backbone_network',
                      None,
