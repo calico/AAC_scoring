@@ -49,7 +49,9 @@ To compute the calcification scores on a folder of DEXA images only from model 1
 python predict_aac_scores.py --img_dir=<absolute path to folder containing DEXA images> --model_file_segmentation=<absolute path to segmentation model file> --model_file_regression=<absolute path to regression model file> --visualize=False
 ```
 
-First, the images are segmented and the extracted Aortic regions are extracted to a sub-folder called 'aortic_regions' within the folder containing the DEXA images. Next, the regression model runs on these extracted regions to generate a csv file called 'predicted_aac_scores_model1.csv' in the main folder containing the DEXA images. A sample extract from the CSV file looks like the image below.
+The segmentation and regression model files are released along with the code and can be found under [releases](https://github.com/calico/AAC_scoring/releases).
+
+Upon running the model, first, the images are segmented and the extracted Aortic regions are extracted to a sub-folder called 'aortic_regions' within the folder containing the DEXA images. Next, the regression model runs on these extracted regions to generate a csv file called 'predicted_aac_scores_model1.csv' in the main folder containing the DEXA images. A sample extract from the CSV file looks like the image below.
 
 img_name | predicted_score
 --- | --- 
@@ -82,17 +84,6 @@ Flag | Description
 ```model_file_regression``` | ```model file for regression```
 
 
-
-### Computing ensemble calcification scores using both models
-To compute the ensemble score from both models on a folder of DEXA images, the inference call is run from the parent folder as follows - 
-
-```
-python get_ensemble_scores.py --img_dir=<absolute path to folder containing DEXA images> --model_file_segmentation=<absolute path to segmentation model file> --model_file_regression=<absolute path to regression model file> --visualize=False <followed by other flags needed by model 2>
-```
-
-In this mode, model_1 is called as described previously and then model_2 is called to generate another csv file with calcification scores for each image. The 2 scores are averaged and a csv file with the ensemble scores called 'predicted_aac_scores_ensemble.csv' is output in the main folder containing the DEXA images.
-
-
 ## Training
 The training routines for Model_1 are described below.
 
@@ -106,6 +97,8 @@ The training routine is called as shown below from within the segmentation folde
 ```
 python train_unet.py --img_dir=<absolute path to folder of DEXA png images> --masks_dir=<absolute path to folder of tif stacks of masks for png images> --logs_dir=<absolute path to where the model files and checkpoints should be stored>
 ```
+
+The masks represent the user annotations of the spine and pelvic regions. The annotations and corresponding training images are not released along with the code. If you wish to train on your own dataset, you will need to use an annotation tool like [QuPath](https://qupath.github.io/) and have the user draw polygons over the desired regions for the various classes. The user annotated masks will then need to be stored as tif stacks containing as many channels as the desired number of classes including the background class.
 
 The full set of flags for training the segmentation model are as follows - 
 
