@@ -36,7 +36,7 @@ def compute_aac_scores():
     pred_scores = mb.model.predict(dl.image_label_ds, steps=dl.image_count)
     df = pd.DataFrame(data={'img_name': [osp.basename(_) for _ in dl.all_image_paths], 'predicted_score': [np.round(np.maximum(0, p), 2) for sublist in pred_scores for p in sublist]})
     df.to_csv(osp.join(FLAGS.img_dir, 'predicted_aac_scores_model1.csv'), index=False)
-    print('Predictions completed and written to predicted_aac_scores_model1.csv')
+    print('Predictions completed and written to {p}'.format(p=osp.join(FLAGS.img_dir, 'predicted_aac_scores_model1.csv')))
 
     scores_dict = {}
     img_names = [osp.basename(_) for _ in dl.all_image_paths]
