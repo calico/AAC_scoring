@@ -24,9 +24,14 @@ def main(argv):
         raise ValueError('Image folder missing. Use --img_dir= argument to set this folder name.')
 
     # compute model 1 scores
+    print('Running model 1')
     scores_1 = model_1.get_scores()
+    print('Model 1 complete')
+    
     # compute model 2 scores
+    print('Running model 2')
     scores_2 = model_2.get_scores(FLAGS.img_dir)
+    print('Model 2 complete')
 
     # get list of all png images in folder
     img_names = glob.glob(os.path.join(FLAGS.img_dir, '*png'))
