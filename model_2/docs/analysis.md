@@ -177,6 +177,7 @@ use of the "test" set in optimizing the results, its similar performance to the
 | ------------ | -------- |
 | Pearson r = 0.7042 | Pearson r = 0.7009 |
 | <img src="../images/med_vs_regA_train.png" alt="regression training set"> | <img src="../images/med_vs_regA_test.png" alt="regression test set"> |
+| x-axis: mean manual annotation; y-axis: computed score | x-axis: mean manual annotation; y-axis: computed score |
 
 To more accurately assess model performance and over-fitting, Sethi used an additional
 validation set that was truly independent of my training.  That validation is below:
@@ -188,8 +189,8 @@ validation set that was truly independent of my training.  That validation is be
 
 While the performance below was
 not as good as for my training data, the performance was sufficient to contribute to
-the analysis.  Performance was similar to that of an
-[independently-developed method](https://github.com/calico/AAC_scoring), and the two
+the analysis.  Performance was similar to that of an independently-developed method
+[(Model 1)](https://github.com/calico/AAC_scoring/tree/master/model_1), and the two
 methods were dissimlar enough that averaging their two outputs substantially increased
 the predictive power versus either model individually.  See the Sethi et al manuscript
 for a description of how those averaged scores from the two models were used to
