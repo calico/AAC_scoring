@@ -71,9 +71,11 @@ def get_scores():
     '''
 
     # predict the aortic region
+    print('Segmenting the images and extracting the Aortic regions')
     predict_aortic_region()
 
     # compute the AAC scores
+    print('Mapping the extracted aortic regions to a score')
     scores = compute_aac_scores()
     #scores=None
     return scores
