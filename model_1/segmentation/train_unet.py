@@ -20,16 +20,16 @@ from .data_loader import DataLoader
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string('img_dir',
-                    '/scratch/jagadish/calcification/data/segmentation/unet/data_v8/images/',
+                    None,
                     'directory containing images for training')
 flags.DEFINE_string('masks_dir',
-                    '/scratch/jagadish/calcification/data/segmentation/unet/data_v8/masks/',
+                    None,
                     'directory containing GT masks for training')
 flags.DEFINE_string('logs_dir',
-                     '/scratch/jagadish/calcification/models/segmentation/unet/' + datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d-%H%M%S'),#20190612-211337/',# + datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d-%H%M%S'),
+                     'logs/' + datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d-%H%M%S'),
                      'directory to write the model and log files to')
 flags.DEFINE_string('tfrecords_dir',
-                     '/scratch/jagadish/calcification/data/segmentation/unet/data_v8/images/tfrecords_new/',
+                     None,
                      'directory to write TF Records to for training')
 flags.DEFINE_integer('batch_size',
                      8,
