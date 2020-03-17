@@ -1,9 +1,5 @@
 # Scoring of the abdominal aortic calcification
 
-The scoring of the DEXA images is based on the scheme shown below (from [this](https://bmcnephrol.biomedcentral.com/articles/10.1186/s12882-017-0480-2) reference paper).
-
-![ScreenShot](images/Abdominal_aortic_calcification_quantification.png)
-
 Given a folder full of DEXA images from the UKBB dataset (after the images have been converted to png format from the DICOM format), the code can be run to generate scores only using model_1 (U-net for segmentation + aortic region extraction + regression for scoring) or to generate ensemble scores from model_1 and model_2.
 
 Model 1 estimates AAC scores via the following 3 steps:
