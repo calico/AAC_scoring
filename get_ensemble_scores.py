@@ -43,7 +43,7 @@ def main(argv):
 
     df = pd.DataFrame(data={'img_name': img_names, 'predicted_score': scores})
     df.to_csv(os.path.join(FLAGS.img_dir, 'predicted_aac_scores_ensemble.csv'), index=False)
-    print('Predictions completed on both models and ensemble scores written to predicted_aac_scores_ensemble.csv')
+    print('Predictions completed on both models and ensemble scores written to {p}'.format(p=os.path.join(FLAGS.img_dir, 'predicted_aac_scores_ensemble.csv')))
 
 
 if __name__ == '__main__':
