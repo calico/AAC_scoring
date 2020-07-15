@@ -391,8 +391,9 @@ class CalcBoxer:
                 range(len(xysL))))
     # get L4/L5 box as "bBox"
     if not(self._hasBx): self._makeAiBoxes()
-    sbL = [(b.score(),b) for b in self._baseBL]
-    bBox = max(sbL)[1]
+    tmpL = [(b.score(),b) for b in self._baseBL]
+    sbL = [(tmpL[n][0],n,tmpL[n][1]) for n in range(len(tmpL))]
+    bBox = max(sbL)[2]
     def ovlBase(xysn):
       x,y,s,n = xysn
       if x > bBox.xMax() or x < bBox.xMin(): return False
@@ -533,8 +534,9 @@ class CalcBoxer:
         changed = True
       elif label=='skipone':
         fillBL = self._modSet['fill1Det'].getBoxes(subImg)
-        fillBL = [(b.score(),b) for b in fillBL]
-        newBS,newB = max(fillBL)
+        tmpL = [(b.score(),b) for b in fillBL]
+        fillBL = [(tmpL[n][0],n,tmpL[n][1]) for n in range(len(tmpL))]
+        newBS,tiebreakN,newB = max(fillBL)
         if newBS >= self._minScP:
           addBoxL.append(self._adjustBox(newB,xMn,yMn))
           changed = True
@@ -584,9 +586,10 @@ class CalcBoxer:
           cv2.line(subImg,(x,y),(x,y),colorDot,thickness=5)
           if not(self._modSet['baseOk'].isOk(subImg)):
             fillBL = self._modSet['fillBotDet'].getBoxes(subImg)
-            fillBL = [(b.score(),b) for b in fillBL]
+            tmpL = [(b.score(),b) for b in fillBL]
+            fillBL = [(tmpL[n][0],n,tmpL[n][1]) for n in range(len(tmpL))]
             if len(fillBL) >0:
-              newBS,newB = max(fillBL)
+              newBS,tiebreakN,newB = max(fillBL)
               newB = self._adjustBox(newB,xMn,yMn)
               if newBS >= self._minScP:
                 # make sure the new box is at the bottom
