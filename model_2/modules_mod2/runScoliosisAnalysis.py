@@ -85,10 +85,16 @@ class ImgGenerator:
     foutNameL = os.path.basename(finName).split('.')
     foutName = '.'.join(foutNameL)
     foutName = os.path.join(self._outDir,foutName)
+
     # calculations on the image
-    img = self._resizer(cv2.imread(finName),finName)
-    calcBox = CalcBoxer(img,self._modSet,imageTag=foutName)
-    calcBox.scoliosisCurve()
+    img_orig = cv2.imread(finName)
+    if img_orig is not None: 
+
+        #resize
+        img = self._resizer(img_orig,finName)
+        calcBox = CalcBoxer(img,self._modSet,imageTag=foutName)
+        calcBox.scoliosisCurve()
+    
     self._imgMang.moveToNext()
     return True
 
