@@ -9,6 +9,7 @@ import os, cv2, sys
 import argparse
 import os
 import numpy as np, math
+import re
 
 from . import ml_tools as ML
 from . import geometry_tools as GM
@@ -89,11 +90,22 @@ class ImgGenerator:
     # calculations on the image
     img_orig = cv2.imread(finName)
     if img_orig is not None: 
-
         #resize
         img = self._resizer(img_orig,finName)
         calcBox = CalcBoxer(img,self._modSet,imageTag=foutName)
-        calcBox.scoliosisCurve()
+        curve_score = calcBox.spineCurvature()
+
+        indID = re.sub('.png','', foutName);
+        indID = re.sub('.*\/','', indID);
+        print(indID, round(curve_score,1))
+
+        #in case we want to paralize
+        pid = str(os.getpid())
+        with open(self._outDir + "/results." +pid + ".tsv", 'a') as saveOutputFile:
+            saveOutputFile.write("{}\t{}\n".format(indID, round(curve_score,2)))
+            saveOutputFile.close()
+
+    #get next image
     
     self._imgMang.moveToNext()
     return True
@@ -248,7 +260,7 @@ class CalcBoxer:
       #if self._nForL4() < 1:
       #  self._addBottomBoxes()
 
-  def scoliosisCurve(self):
+  def spineCurvature(self):
     """Returns a polygon that is actually a rectangle, but may be
     at an odd, non-vertically-aligned angle.  It defines the region
     of the image that will be extracted by "rectangleImg".
@@ -258,7 +270,7 @@ class CalcBoxer:
     """
     if self._img is None: return {}
     if not(self._isRefined): self.refineSpineTrace()
-    self._scoliosisCurve()
+    return self._spineCurvature()
 
 
   def aortaRectAngles(self,vertNameNL):
@@ -390,7 +402,7 @@ class CalcBoxer:
 
   # HELPER FUNCTIONS
 
-  def _scoliosisCurve(self): #Eugene
+  def _spineCurvature(self, makeImage=False): #Eugene
     if not(self._img is None and len(self._vertBL)>=2):
          subImg = np.copy(self._img)
          foutName = self._imageTag + ".spineAngles.png";
@@ -404,9 +416,11 @@ class CalcBoxer:
                baseX = (bBox.xMin()+bBox.xMax())/2
                baseY = (bBox.yMin()+bBox.yMax())/2
                #print("B ", baseX, baseY, bBox.score(), 0)
-               circ = 30
-               colorCirc = (0,200,250)
-               cv2.circle(subImg,(int(baseX),int(baseY)),circ,colorCirc,thickness=3)
+
+               if makeImage:
+                   circ = 30
+                   colorCirc = (0,200,250)
+                   cv2.circle(subImg,(int(baseX),int(baseY)),circ,colorCirc,thickness=3)
 
          spinePolygon=[];
          for b in GM.sortBoxesOnAxis(self._vertBL):
@@ -418,9 +432,11 @@ class CalcBoxer:
                 deltaAngle=GM.minAngDiff(refRay.A(),ray.A())
                 spinePolygon.append([xMid,yMid])
                 #print("P ", xMid, yMid, b.score(), vbp.angle(), deltaAngle)
-                circ = 20
-                colorCirc = (0,0,250)
-                cv2.circle(subImg,(int(xMid),int(yMid)),circ,colorCirc,thickness=3)
+
+                if makeImage: 
+                    circ = 20
+                    colorCirc = (0,0,250)
+                    cv2.circle(subImg,(int(xMid),int(yMid)),circ,colorCirc,thickness=3)
 
          pts = np.array(spinePolygon, np.int32)
          pts = pts.reshape((-1,1,2))
@@ -432,13 +448,13 @@ class CalcBoxer:
             area = cv2.contourArea(pts)
             frac_area = area/totalArea
 
-         print("Writing : ", foutName, round(frac_area))
-         cv2.polylines(subImg,[pts],True,(0,255,255))
-         font = cv2.FONT_HERSHEY_SIMPLEX
-         cv2.putText(subImg,str(round(frac_area)),(int(baseX+50),int(baseY)), font, 1,(0,255,255),2,cv2.LINE_AA)
-
-         cv2.imwrite(foutName,subImg)
-
+         if makeImage: 
+             print("Writing : ", foutName, round(frac_area))
+             cv2.polylines(subImg,[pts],True,(0,255,255))
+             font = cv2.FONT_HERSHEY_SIMPLEX
+             cv2.putText(subImg,str(round(frac_area)),(int(baseX+50),int(baseY)), font, 1,(0,255,255),2,cv2.LINE_AA)
+             cv2.imwrite(foutName,subImg)
+    return frac_area
 
   def _makeAiBoxes(self):
     """Applies both of the object-detection models and stores

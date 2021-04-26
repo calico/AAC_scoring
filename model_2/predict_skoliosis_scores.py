@@ -34,7 +34,7 @@ def runAnalysis(args):
   argForSAP['output_dir'] = args['storage_dir']
   argForSAP['original_resize'] = args['original_resize']
   argForSAP['no_resize'] = args['no_resize']
-  argForSAP['output_file'] = os.path.join(args['input_dir'],'predicted_scoliosis_scores.tsv')
+  argForSAP['output_file'] = os.path.join(args['storage_dir'],'predicted_scoliosis_scores.tsv')
 
   print("########## Extracting aortic images ################")
   SAP.runAnalysis(argForSAP)
