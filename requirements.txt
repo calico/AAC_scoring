@@ -45,7 +45,7 @@ nbformat==4.4.0
 nd2reader==3.1.0
 netifaces==0.10.9
 networkx==2.3
-notebook==6.1.5
+notebook==6.4.1
 numpy==1.16.3
 opencv-python==4.1.0.25
 pandas==0.24.2
