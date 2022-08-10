@@ -21,7 +21,7 @@ flags.DEFINE_string('img_dir',
                     None,
                     'directory containing images for prediction')
 flags.DEFINE_string('model_file_segmentation',
-                    'model_files/final_model_unet',
+                    'model_1/model_files/final_model_unet',
                     'model file for segmentation')
 flags.DEFINE_integer('num_classes',
                      3,
@@ -61,7 +61,7 @@ flags.DEFINE_string('backbone_network',
                     None,
                     'Backbone network to use')
 flags.DEFINE_string('model_file_regression',
-                    'model_files/final_model_regression.hdf5',
+                    'model_1/model_files/final_model_regression.hdf5',
                     'model file for regression')
 
 
