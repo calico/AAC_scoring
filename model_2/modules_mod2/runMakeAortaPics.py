@@ -13,7 +13,7 @@ import numpy as np, math
 from . import ml_tools as ML
 from . import geometry_tools as GM
 from . import file_tools as FT
-
+        
 
 # REQUIRES: vertEnList orders vertebrae from top to bottom;
 #           if 'L4' is in the list, it must be 0
@@ -42,7 +42,7 @@ class ImgGenerator:
        beside for finding the aortic image (a vestige of the development
        of this system, when I hadn't chosen this yet).
     resizeOpt: the iamge-resizing strategy to be applied. 'default' means
-       that all images will be re-sized such that their height is 940
+       that all images will be re-sized such that their height is 940 
        pixels; 'original' means as in Sethi et al, when applicable;
        'none' means no re-sizing.
     """
@@ -54,7 +54,7 @@ class ImgGenerator:
         raise ValueError("ImgGenerator needs this ML model for CalcBoxer: "+rm)
     self._imgMang = FT.ImageIterator(imgDir)
     self._modSet = modSet
-
+    
     self._outDir = outDir
     self._elnL = list(map(lambda i:i, vertEnList))
     self._imgMang.initiateSort()
@@ -88,12 +88,11 @@ class ImgGenerator:
     foutName = '.'.join(foutNameL)
     foutName = os.path.join(self._outDir,foutName)
     # calculations on the image
-    img = self._resizer(cv2.imread(finName),finName)
-    calcBox = CalcBoxer(img,self._modSet,imageTag=foutName)
+    img = self._resizer(cv2.imread(finName), finName)
+    calcBox = CalcBoxer(img,self._modSet)
     angD = calcBox.aortaRectAngles(self._elnL)
     rectD = calcBox.aortaRectangles(self._elnL)
     outImgL = []
-
     for el,other in self._elnL:
       if el in rectD:
         aortaImg = calcBox.rectangleImg(angD[el],rectD[el])
@@ -120,7 +119,7 @@ class ImgGenerator:
     if self._nDefRsz > 0:
       tL.append(str(self._nDefRsz)+' images were re-sized uniformly to height=940.')
     if self._n55Rsz > 0:
-      tL.append(str(self._n55Rsz)+' images were re-sized to 55% along each axis.')
+      tL.append(str(self._n55Rsz)+' images were re-sized to 55% along each axis.')      
     if self._nNoRsz > 0:
       tL.append(str(self._nNoRsz)+' images were analyzed at their original sizes.')
     if len(tL)==0: return 'No images were analyzed.'
@@ -165,7 +164,7 @@ class ImgGenerator:
     return resizeFunc
 
 
-
+  
 class CalcBoxer:
   """This class is the real workhorse for identification of the
   aortic region from an image and extracting it.  By itself, it
@@ -182,11 +181,11 @@ class CalcBoxer:
   image to-be-analyzed, then calling "aortaRectangles" and
   "aortaRectAngles" to get the boxes and their angles, respectively,
   adjacent to the requested vertebrae.  For each vertebra, calling
-  "rectangleImg" with those two values will extract the specified
+  "rectangleImg" with those two values will extract the specified 
   sub-image, now aligned with the vertical axis parallel to the spine.
   """
   def __init__(self,img,modSet,
-               minScoreV=0.05,maxVertAngleDeg=45,minScorePost=0.5,imageTag=""):
+               minScoreV=0.1,maxVertAngleDeg=45,minScorePost=0.5):
     """
     img: the full DEXA image to be analyzed (numpy array)
     modSet: a dictionary of the ML models needed for analysis. see
@@ -213,7 +212,6 @@ class CalcBoxer:
     else: self._img = np.dstack((img[:,:,0],img[:,:,1],img[:,:,2]))
     self._hasBx = False
     self._isRefined = False
-    self._imageTag = imageTag;
 
   def refineSpineTrace(self):
     """The spine analysis pipeline.  It doesn't need to be
@@ -222,14 +220,12 @@ class CalcBoxer:
     to prototype or visualize some component of the results
     it generates.
     """
-
     if not(self._img is None) and not(self._isRefined):
       if not(self._hasBx): self._makeAiBoxes()
       # filter by score
       self._boxScoreFilter(self._vertBL,self._vertExBL,self._minScV)
       # filter/add based on different properties
       self._applySpineAngleFilter()
-      self._spineCurve()
       self._evaluateVerts()
       lastChanged = True
       for n in range(4):
@@ -253,7 +249,7 @@ class CalcBoxer:
     if nL4==-1: return {}
     bL = GM.sortBoxesOnAxis(self._vertBL)
     if len(bL) < 2: return {}
-    angPrL = list(map(lambda n: VertebraBoxPair(bL[n-1],bL[n]).angle(),
+    angPrL = list(map(lambda n: VertebraBoxPair(bL[n-1],bL[n]).angle(), 
                  range(1,len(bL))))
     angSgL = [ angPrL[0] ]
     for n in range(1,len(angPrL)):
@@ -279,7 +275,7 @@ class CalcBoxer:
     if nL4==-1: return {}
     bL = GM.sortBoxesOnAxis(self._vertBL)
     if len(bL) < 2: return {}
-    # rays defining box edges
+    # rays defining box edges 
     preRL,postRL = [],[]
     for n in range(1,len(bL)):
       xA,yA = bL[n-1].midpoint()
@@ -366,33 +362,6 @@ class CalcBoxer:
 
   # HELPER FUNCTIONS
 
-  def _spineCurve(self): #Eugene
-    if not(self._img is None):
-         subImg = np.copy(self._img)
-         finName = self._imageTag + "_spineAngles.png";
-         for b in self._vertBL:
-                if(b.score() > 0.05):
-                    yMid = int((b.yMin()+b.yMax())/2)
-                    xMid = int((b.xMin()+b.xMax())/2)
-                    print(yMid, xMid, b.score())
-                    bord,circ = 20,10
-                    colorCirc,colorDot = (0,0,250),(0,250,0)
-                    cv2.circle(subImg,(xMid,yMid),circ,colorCirc,thickness=3)
-
-         tmpL = [(b.score(),b) for b in self._baseBL]
-         if tmpL:
-               sbL = [(tmpL[n][0],n,tmpL[n][1]) for n in range(len(tmpL))]
-               bBox = max(sbL)[2]
-               yMid = int((bBox.yMin()+bBox.yMax())/2)
-               xMid = int((bBox.xMin()+bBox.xMax())/2)
-               print(yMid, xMid, bBox.score())
-               bord,circ = 20,10
-               colorCirc,colorDot = (0,200,250),(0,200,250)
-               cv2.circle(subImg,(xMid,yMid),circ,colorCirc,thickness=3)
-
-         cv2.imwrite(finName,subImg)
-
-
   def _makeAiBoxes(self):
     """Applies both of the object-detection models and stores
     the returned boxes as a list
@@ -458,7 +427,7 @@ class CalcBoxer:
       x,y = b.midpoint()
       if not(self._getVertOkVal(x,y,True)): moveL.append(b)
     for b in moveL: self._vertBL.remove(b)
-    self._vertExBL.extend(moveL)
+    self._vertExBL.extend(moveL)    
 
   def _getVertOkVal(self,x,y,getBool):
     """helper for "_evaluateVerts": THIS function actually
@@ -475,7 +444,7 @@ class CalcBoxer:
     x,y = x-xMn,y-yMn
     cv2.circle(subImg,(x,y),circ,colorCirc,thickness=3)
     if getBool: return self._modSet['vertOk'].isOk(subImg)
-    else: return self._modSet['vertOk'].scoreOk(subImg)
+    else: return self._modSet['vertOk'].scoreOk(subImg)    
 
   def _applySpineAngleFilter(self):
     """Eliminates vertebra that would create a sharp angle
@@ -634,7 +603,7 @@ class CalcBoxer:
                   #changed = (self._nForL4() == -1)
                   # MODIFIED: I want L5 (so 0 => keep going)
                   changed = (self._nForL4() < 1)
-
+    
 
 class VertebraBoxPair:
   """Sometimes, the edge between two vertebrae is the data
@@ -703,11 +672,11 @@ def runAnalysis(inputArgs):
   if not('no_resize' in args): args['no_resize'] = False
   if args['original_resize'] and args['no_resize']:
     raise ValueError('original_resize and no_resize options cannot BOTH be selected')
-
+  
   # set up all of the models
   modSet = {}
-  modSet['vertDet'] = ML.TfObjectDetector(pMods["vert_mod"],pMods["vert_label"],1)
-  modSet['baseDet'] = ML.TfObjectDetector(pMods["l4l5_mod"],pMods["l4l5_label"],1)
+  modSet['vertDet'] = ML.TfObjectDetector(pMods["vert_mod"],pMods["vert_label"],1)  
+  modSet['baseDet'] = ML.TfObjectDetector(pMods["l4l5_mod"],pMods["l4l5_label"],1)  
   modSet['vertOk'] = ML.TfBooleanApplyer(pMods["okV_mod"],pMods["okV_label"],'ok')
   modSet['gapClass'] = ML.TfClassApplyer(pMods["gap_mod"],pMods["gap_label"])
   modSet['fill1Det'] = ML.TfObjectDetector(pMods["fill1_mod"],pMods["fill1_label"],1)
@@ -718,7 +687,7 @@ def runAnalysis(inputArgs):
   resizeOpt = 'default'
   if args['original_resize']: resizeOpt = 'original'
   if args['no_resize']: resizeOpt = 'none'
-
+  
   vertL = list(map(lambda i: i.split('-'), permVerts.split(',')))
   vertL = [(i[0],int(i[1])) for i in vertL]
   imgWriter = ImgGenerator(args["input_dir"],modSet,args["output_dir"],vertL,resizeOpt)
