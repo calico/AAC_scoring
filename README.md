@@ -10,7 +10,7 @@ Given a folder full of DEXA images from the UKBB dataset (after the images have 
 The recommended build environment for the code is to have [Anaconda](https://docs.anaconda.com/anaconda/install/) installed and then to create a conda environment for python 3 as shown below:
 
 ```
-conda create -n aac python=3.7
+conda create -n aac python=3.6.8
 ```
 
 Once created, activate the environment and install all the needed libraries as follows: 
